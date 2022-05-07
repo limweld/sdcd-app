@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:json="http://www.mulesoft.org/schema/mule/json"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+<sub-flow name="loginUserControllerFlow">
+		<json:json-to-object-transformer returnClass="java.util.HashMap" doc:name="JSON to Object"/>
+		<set-variable variableName="inputPassword" value="#[payload.password]" doc:name="Variable"/>
+		<db:select config-ref="MariaDB_Generic_Database_Configuration" doc:name="Read">
+			<db:parameterized-query><![CDATA[select username,password from users where username=#[payload.username] and enabled = 1 limit 1]]></db:parameterized-query>
+		</db:select>
+		<choice doc:name="Choice">
+			<when expression="#[payload != empty]">
+				<custom-transformer mimeType="application/java" class="org.transform.api.AuthenticationPasswordCheckRepository" doc:name="Transform Services"/>
+				<flow-ref name="retrieveTokenUserControllerFlow" doc:name="retrieveTokenUser Flow Reference"/>
+			</when>
+			<otherwise>
+				<logger message="#[&quot;Data Not Exist&quot;]" level="INFO" doc:name="Logger"/>
+			</otherwise>
+		</choice>
+	</sub-flow>
+	<sub-flow name="retrieveTokenUserControllerFlow">
+		<choice doc:name="Choice">
+			<when expression="#[payload.isMatched == true]">
+				<set-variable variableName="usernameToken" value="#[payload.username]" doc:name="Variable"/>
+				<db:update config-ref="MariaDB_Generic_Database_Configuration" doc:name="Update">
+					<db:parameterized-query><![CDATA[UPDATE users SET token=#[payload.token] WHERE username=#[payload.username] limit 1]]></db:parameterized-query>
+				</db:update>
+				<db:select config-ref="MariaDB_Generic_Database_Configuration" doc:name="Select">
+					<db:parameterized-query><![CDATA[select id,token,username,firstname,lastname from users where username=#[flowVars.usernameToken] limit 1]]></db:parameterized-query>
+				</db:select>
+				<logger message="#['Token Created']" level="INFO" doc:name="Logger"/>
+			</when>
+			<otherwise>
+				<custom-transformer mimeType="application/java" class="org.transform.api.EmptyPayload" doc:name="Transform Services"/>
+				<logger message="#['Password Not Match']" level="INFO" doc:name="Logger"/>
+			</otherwise>
+		</choice>
+	</sub-flow>
+	<sub-flow name="validateTokenUserControllerFlow">
+		<db:select config-ref="MariaDB_Generic_Database_Configuration" doc:name="Select">
+			<db:parameterized-query><![CDATA[select token from users where token=#[flowVars.dataQueryInput.api_token] limit 1]]></db:parameterized-query>
+		</db:select>
+		<choice doc:name="Choice">
+			<when expression="#[payload != empty]">
+				<json:object-to-json-transformer doc:name="Object to JSON"/>
+			</when>
+			<otherwise>
+				<logger message="#[&quot;TEST&quot;]" level="INFO" doc:name="Logger"/>
+			</otherwise>
+		</choice>
+	</sub-flow>
+	<sub-flow name="sdcd-app-controller-authSub_Flow">
+		<custom-transformer mimeType="application/java" class="org.transform.api.AuthenticationRepository" doc:name="Transform Services"/>
+		<db:select config-ref="MariaDB_Generic_Database_Configuration" doc:name="Read">
+			<db:parameterized-query><![CDATA[select id, username, firstname, lastname from users where username=#[payload.username] and password=#[payload.password] limit 1]]></db:parameterized-query>
+		</db:select>
+		<json:object-to-json-transformer doc:name="Object to JSON"/>
+		<logger message="#['Login User Succesfully']" level="INFO" doc:name="Logger"/>
+	</sub-flow>
+</mule>

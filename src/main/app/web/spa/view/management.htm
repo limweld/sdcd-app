@@ -1,0 +1,355 @@
+<div class="w3-main w3-white side-bar-space">
+
+    <div class="w3-container">
+
+        <div class="w3-margin">
+            <div class="topnav">
+                <a class="active">Management</a>
+                <div class="topnav-right">
+                    <a href="">{{user.fullname}}</a>
+                    <a href="#!login">Logout <i class="fa fa-sign-out"></i></a>
+                </div>
+            </div> 
+        </div>
+
+        <div class="w3-margin">
+            <div class="w3-card-4">
+                
+                <div class="w3-bar w3-black">
+                    <button class="w3-bar-item w3-button {{management.ipCameras.tabActive}}" ng-click="management.ipCameras.clickTab()">IP Cameras</button>
+                    <button class="w3-bar-item w3-button {{management.users.tabActive}}" ng-click="management.users.clickTab()">Users</button>
+                    <button class="w3-bar-item w3-button {{management.features.tabActive}}" ng-click="management.features.clickTab()">Features</button>
+                </div>
+    
+                <div id="IP_Cameras" class="w3-container" ng-show="management.ipCameras.tableViewVisibility">
+                
+                    <div class="w3-panel row">
+                        <form class="form-inline">
+                            <label>Rows</label>
+                            <select id="inputState" class="form-control">
+                                <option selected>Choose...</option>
+                                <option>...</option>
+                            </select>
+                            <div  class="cst-cmpt-right">
+                                <div class="btn btn-sm btn-primary"><i class="fa fa-refresh"></i> Reload</div>
+                                <div class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Create</div>
+                                <div class="btn btn-sm btn-primary"><i class="fa fa-search"></i> Search</div>
+                                <input type="text" class="form-control">
+                            </div>
+                        </form>
+                    </div>
+
+                    <table class="w3-table w3-bordered w3-hoverable w3-small w3-border">
+                        <thead>
+                            <tr class="w3-light-grey">
+                                <th>Name</th>
+                                <th>Ip</th>
+                                <th>Details</th>
+                                <th><i class="fa fa-info-circle" ></i></th>
+                            </tr>
+                        </thead>
+                        <tr>
+                            <td>CAM_1</td>
+                            <td>10.1.1.1</td>
+                            <td>WasteGas.com</td>
+                            <td>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>CAM_2</td>
+                            <td>10.1.1.1</td>
+                            <td>WasteGas.com</td>
+                            <td>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="w3-panel row">
+
+                    </div>
+            
+                </div>
+
+                <div id="Users" class="w3-container" ng-show="management.users.tableViewVisibility">
+                
+                    <div class="w3-panel row" ng-show="management.users.entryListViewPanel">
+                        <form class="form-inline">
+                            <label>Rows</label>
+                            <select name="dataTable_length" aria-controls="dataTable" class="custom-select custom-select-sm form-control form-control-sm" ng-options="item.value for item in management.users.rangeRows track by item.id"  ng-model="management.users.selectedRangeRow" ng-change="management.users.selectedRangeRowChange()">
+                            </select> Rows
+                            <div  class="cst-cmpt-right">
+                                <div class="btn btn-sm btn-primary" ng-click="management.users.createUserEntryButton()"><i class="fa fa-plus"></i> Create</div>
+                                <div class="btn btn-sm btn-primary" ng-click="management.users.searchUserEntryButton()"><i class="fa fa-search"></i> Search</div>
+                                <input type="text" class="form-control" ng-model="management.users.searchUserInputField">
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="form-group row" ng-show="management.users.loadingListEntryVisibility">
+                        <div class="col-sm-12">
+                          <div class="progress">
+                            <div class="progress-bar progress-bar-striped active" style="width:100%"></div>
+                          </div>
+                        </div>
+                    </div>
+
+                    <table class="w3-table w3-bordered w3-hoverable w3-small w3-border" ng-show="management.users.entryListViewPanel">
+                        <thead>
+                            <tr class="w3-light-grey">
+                                <th>Username</th>
+                                <th>Details</th>
+                                <th><i class="fa fa-info-circle"  ></i></th>
+                                <th style="text-align: center;"><i class="fa fa-edit"></i></th>
+                            </tr>
+                        </thead>
+                        <tr ng-repeat="x in management.users.usersListTransformed">
+                            <td>{{x.username}}</td>
+                            <td>{{x.details}}</td>
+                            <td>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" disabled="disabled" ng-checked={{x.enabledCheck}}>
+                                </div>
+                            </td>
+                            <td style="text-align: center;">
+                                <div class="w3-button w3-tiny w3-blue" ng-click="management.users.modifyEntryClickButton(x)">
+                                    <i class="fa fa-edit"></i> Edit 
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="w3-panel row" ng-show="management.users.entryListViewPanel">
+                        <form class="form-inline">
+                            <ul class="pagination pagination-sm">
+                              <li class="page-item" ng-show="management.users.pagination.state.first" ng-click="management.users.pagination.first_click()">
+                                  <a href="" class="page-link"><i class="fa fa-angle-double-left"></i></a>
+                              </li>
+                              <li class="page-item" ng-show="management.users.pagination.state.previous" ng-click="management.users.pagination.previous_click()">
+                                  <a href="" class="page-link"><i class="fa fa-angle-left"></i></a>
+                              </li>
+                              <li class="page-item" ng-show="management.users.pagination.state.previousPages" ng-click="management.users.pagination.previouspages_click()">
+                                  <a href="" class="page-link">..</a>
+                              </li>
+                              <li class="page-item {{ x.active }}" ng-repeat="x in management.users.pagination.state.pages" ng-click="management.users.pagination.pages_click(x)">
+                                  <a href="" class="page-link">{{ x.page }}</a>
+                              </li>
+                              <li class="page-item">
+                                  <a href="" class="page-link" ng-show="management.users.pagination.state.nextPages" ng-click="management.users.pagination.nextpages_click()">..</a>
+                              </li>
+                              <li class="page-item next" ng-show="management.users.pagination.state.next" ng-click="management.users.pagination.next_click()">
+                                  <a href="" class="page-link"><i class="fa fa-angle-right"></i></a>
+                              </li>
+                              <li class="page-item" ng-show="management.users.pagination.state.last" ng-click="management.users.pagination.last_click()">
+                                  <a href="" class="page-link"><i class="fa fa-angle-double-right"></i></a>
+                              </li>
+                            </ul>
+                            <div class="cst-cmpt-right w3-margin-top">
+                                Showing {{ management.users.showfrom }} to {{ management.users.showto }} of {{ management.users.totalrows }} entries
+                            </div>  
+                        </form>
+                    </div>
+
+                    <div class="w3-panel row" ng-show="management.users.addModifyViewEntryPanel">
+
+                        <form>
+                            <div class="form-group row">
+                                <div class="col-sm-9">
+                                    <h3><b>{{ management.users.userEntryAction }} User</b></h3>
+                                </div>
+                            </div>
+
+                            <div class="form-group row" ng-show="management.users.loadingActionEntryVisibility">
+                              <div class="col-sm-12">
+                                <div class="progress">
+                                  <div class="progress-bar progress-bar-striped active" style="width:100%"></div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group row" ng-show="management.users.idFieldVisibility">
+                                <label class="col-sm-3 col-form-label col-form-label-sm">Id</label>
+                                <div class="col-sm-9">
+                                  <input type="input" class="form-control form-control-sm" ng-model="management.users.user.id" readonly>
+                                </div>
+                            </div>
+              
+                            <div class="form-group row">
+                              <label class="col-sm-3 col-form-label col-form-label-sm">Username</label>
+                              <div class="col-sm-9">
+                                <input type="input" class="form-control form-control-sm" ng-model="management.users.user.username" ng-disabled="management.users.usernameFieldDisabled">
+                              </div>
+                            </div>
+              
+                            <div class="form-group row">
+                              <label class="col-sm-3 col-form-label col-form-label-sm">Password</label>
+                              <div class="col-sm-9">
+                                <div class="w3-button w3-tiny w3-blue" ng-click="management.users.updatePasswordButton()">
+                                    <i class="fa fa-key"></i> {{ management.users.user.passwordAction }} 
+                                </div>
+                              </div>
+                            </div>
+              
+                            <div class="form-group row">
+                              <label class="col-sm-3 col-form-label col-form-label-sm">Firstname</label>
+                              <div class="col-sm-9">
+                                <input type="input" class="form-control form-control-sm" ng-model="management.users.user.firstname" >
+                              </div>
+                            </div>
+              
+                            <div class="form-group row">
+                              <label class="col-sm-3 col-form-label col-form-label-sm">Lastname</label>
+                              <div class="col-sm-9">
+                                <input type="input" class="form-control form-control-sm" ng-model="management.users.user.lastname" >
+                              </div>
+                            </div>
+              
+                            <div class="form-group row">
+                              <label class="col-sm-3 col-form-label col-form-label-sm">Details</label>
+                              <div class="col-sm-9">
+                                <input type="input" class="form-control form-control-sm" ng-model="management.users.user.details">
+                              </div>
+                            </div>
+              
+                            <div class="form-group row">
+                              <label class="col-sm-3 col-form-label col-form-label-sm">Enabled</label>
+                              <div class="col-sm-9">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" ng-model="management.users.user.enabled">
+                                </div>
+                              </div>
+                            </div>
+              
+                            <div class="form-group row" ng-show="management.users.createdAtFieldVisibility">
+                              <label class="col-sm-3 col-form-label col-form-label-sm">Created At</label>
+                              <div class="col-sm-9">
+                                <input type="input" class="form-control form-control-sm" ng-model="management.users.user.createdAt" readonly>
+                              </div>
+                            </div>
+              
+                            <div class="form-group row" ng-show="management.users.updatedAtFieldVisibility">
+                              <label class="col-sm-3 col-form-label col-form-label-sm">Updated At</label>
+                              <div class="col-sm-9">
+                                <input type="input" class="form-control form-control-sm" ng-model="management.users.user.updatedAt" readonly>
+                              </div>
+                            </div>
+              
+
+                            <div class="form-group row" ng-show="management.users.errorAddUserValidationMessageVisibility">
+                                <label class="alert alert-danger col-sm-12 col-form-label col-form-label-sm">{{ management.users.errorAddUserValidationMessage }}</label>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="w3-panel row" ng-show="management.users.addModifyViewEntryPanel">
+                        <form class="form-inline">
+                            <div  class="cst-cmpt-right">
+                                <div class="btn btn-sm btn-info" ng-click="management.users.cancelUserEntryButton()"><i class="fa fa-arrow-left"></i> Back</div>
+                                <div class="btn btn-sm btn-danger" ng-click="management.users.deleteUserEntryButton()" ng-show="management.users.deleteUserEntryButtonVisibility"><i class="fa fa-trash"></i> Delete</div>
+                                <div class="btn btn-sm btn-primary" ng-click="management.users.updateUserEntryButton()" ng-show="management.users.saveUserEntryButtonVisibility"><i class="fa fa-save"></i> Save</div>
+                                <div class="btn btn-sm btn-primary" ng-click="management.users.addUserEntryButton()" ng-show="management.users.addUserEntryButtonVisibility"><i class="fa fa-plus-circle"></i> Add</div>
+                            </div>
+                        </form>
+                    </div>
+
+            
+                </div>
+
+
+            </div>
+        </div>
+
+        <!-- Add User Modal -->
+        <div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <form class="form-inline">
+                            <label>Are you Sure?</label>
+                            <div  class="cst-cmpt-right">
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-body">Deleting User <b> {{management.users.user.username}} </b> Entry.</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="button" data-dismiss="modal"><i class="fa fa-info"></i> No</button>
+                        <button class="btn btn-danger" type="button" ng-click="management.users.confirmDeleteUserEntryButton()"><i class="fa fa-warning"></i> Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Update Password Modal -->
+        <div class="modal fade" id="updateUserPasswordModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <form class="form-inline">
+                        <label>{{ management.users.user.passwordAction }} Password</label>
+                        <div  class="cst-cmpt-right">
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-body">
+                    <form>
+
+                        <div class="form-group row" ng-show="management.users.loadingPasswordUpdateActionEntryVisibility">
+                            <div class="col-sm-12">
+                              <div class="progress">
+                                <div class="progress-bar progress-bar-striped active" style="width:100%"></div>
+                              </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                          <label class="col-sm-6 col-form-label col-form-label-sm">Password</label>
+                          <div class="col-sm-6">
+                            <input type="password" class="form-control form-control-sm" ng-model="management.users.user.password" placeholder="••••••••••••••••">
+                          </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label col-form-label-sm">Confirm Password</label>
+                            <div class="col-sm-6">
+                              <input type="password" class="form-control form-control-sm" ng-model="management.users.user.confirmPassword" placeholder="••••••••••••••••">
+                            </div>
+                        </div>
+
+                        <div class="form-group row" ng-show="management.users.errorPasswordValidationMessageVisibility">
+                            <label class="alert alert-danger col-sm-12 col-form-label col-form-label-sm">{{ management.users.errorPasswordValidationMessage }}</label>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-info" type="button" data-dismiss="modal"><i class="fa fa-arrow-left"></i> Back</button>
+                    <button class="btn btn-primary" type="button" ng-click="management.users.passwordConfirmEntryButton()"><i class="fa fa-save"></i> Save</button>
+                </div>
+            </div>
+            </div>
+        </div>
+    
+        <div class="w3-margin">
+            <div class="w3-card">
+                <header class="w3-container  w3-dark-grey w3-center">
+                    <small>Copyright @ Project Design CPE521 Y2022</small>
+                </header>
+            </div>
+        </div>
+
+    </div>
+
+   
+    
+</div>

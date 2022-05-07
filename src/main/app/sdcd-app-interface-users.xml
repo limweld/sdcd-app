@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="post:/users/create:Main_Router_SDCD_App_Config">
+		<flow-ref name="createUsersControllerFlow" doc:name="createUsersControllerFlow"/>
+	</flow>
+	<flow name="post:/users/read:Main_Router_SDCD_App_Config">
+		<flow-ref name="readUsersControllerFlow" doc:name="readUsersControllerFlow"/>
+	</flow>
+	<flow name="post:/users/read/count:Main_Router_SDCD_App_Config">
+		<flow-ref name="readUsersCountControllerFlow" doc:name="readUsersCountControllerFlow"/>
+	</flow>
+  	<flow name="post:/users/update:Main_Router_SDCD_App_Config">
+		<flow-ref name="updateUsersControllerFlow" doc:name="updateUsersControllerFlow"/>
+	</flow>
+	<flow name="post:/users/update/password:Main_Router_SDCD_App_Config">
+		<flow-ref name="updateUsersPasswordControllerFlow" doc:name="updateUsersPasswordControllerFlow"/>
+	</flow>
+	<flow name="post:/users/delete:Main_Router_SDCD_App_Config">
+		<flow-ref name="deleteUsersControllerFlow" doc:name="deleteUsersControllerFlow"/>
+	</flow>
+</mule>

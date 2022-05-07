@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+    
+    <title>CAID Application</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+    <link rel="stylesheet" type="text/css" href="css/raleway.min.css">
+    <link rel="stylesheet" type="text/css" href="css/material-icons.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/w3.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">      
+    <link rel="stylesheet" type="text/css" href="css/ngToast.min.css">
+    <link rel='stylesheet prefetch' href='css/angular-material.min.css'>
+
+    <link rel='stylesheet' href='css/custom.css'>
+    
+    <script type="text/javascript" src="js/jquery-3.4.1.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script src="js/adapter-latest.js"></script>
+    <script src="js/mqttws31.min.js"></script>
+
+    
+
+      
+    <body class="w3-white w3-content" style="max-width:1600px" >
+
+
+    <!-- Sidebar/menu -->
+    <nav class="w3-sidebar w3-collapse w3-dark-gray w3-animate-left sidenav-place" id="mySidebar" ><br>
+        <div class="w3-bar-block w3-text-white" ng-controller="navigation_controller">
+            <a class="main">
+                <img class="w3-padding w3-round-xxlarge" src="img/MuleSoft.png" style="width:100%">
+            </a>
+            <hr>
+        </div>  
+        <div class="w3-bar-block w3-text-white sidenav" ng-controller="navigation_controller">
+            <a ng-click="home_click()" href="#!home" class="w3-xxxlarge w3-padding {{home_nav}}"><i class="fa fa-tasks" ></i></a> 
+            <!-- <a ng-click="archiver_click()" href="#!archiver" class="w3-xxxlarge w3-padding {{archiver_nav}}"><i class="fa fa-folder"></i></a> -->
+            <a ng-click="management_click()" href="#!management" class="w3-xxxlarge w3-padding {{management_nav}}"><i class="fa fa-cogs"></i></a>
+        </div>  
+    </nav>
+
+    <div ng-view></div>
+
+    <script src="js/angular.js"></script>
+    <script src="js/angular-route.min.js"></script>
+    <script src="js/angular-cookies.min.js"></script>
+    <script src="js/angular-animate.min.js"></script>
+    <script src="js/angular-sanitize.min.js"></script>
+    <script src="js/angular-momentjs.min.js"></script>
+    <script src='js/angular-aria.min.js'></script>
+    <script src='js/angular-messages.min.js'></script>
+    <script src='js/svg-assets-cache.js'></script>
+    <script src="js/angular-material.min.js"></script>
+
+    <script src="spa/controller/main.js"></script>
+    <script src="spa/controller/auth.js"></script>
+    <script src="spa/controller/home.js"></script>
+    <script src="spa/controller/management.js"></script>
+    <script src="spa/controller/archiver.js"></script>
+    <script src="spa/controller/navigation.js"></script>
+
+    <script src="spa/model/auth.js"></script>
+    <script src="spa/model/home.js"></script>
+    <script src="spa/model/archiver.js"></script>
+    <script src="spa/model/management.js"></script>
+
+    <script src="js/custom.js"></script>
+    
+    
+        
+    </body>
+</html>

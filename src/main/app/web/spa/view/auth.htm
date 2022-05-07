@@ -1,0 +1,58 @@
+<div class="w3-blue-grey login-container">
+      
+	<div class="w3-card-4 w3-light-grey w3-round login-panel">
+        
+            <div class="w3-margin shadow-sm p-3 mb-5 bg-white">
+
+                <table style="width : 100%;">
+                    <tbody>
+                            <tr>
+                                <td align="center">
+                                    <span class="text-secondary fa fa-user fa-5x" style="height : 82px; width : 82px; margin-top : -16px; border-style : solid; margin-right : 5;  border-width: 1px; color: #4da6ff;"> </span>
+                                </td>
+                                <td>
+                                    <form>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control form-control-sm" placeholder="Username" ng-model="login.username" ng-change="login.username_change()" ng-keypress="login.key_enter($event)">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control form-control-sm" placeholder="Password" ng-model="login.password" ng-change="login.password_change()" ng-keypress="login.key_enter($event)" ng-keypress="login.key_enter($event)">
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan=2 ng-show="login.loading">
+                                    <div class="progress" style="height: 5px; margin-top : -5px; margin-bottom : 5px;">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated active" role="progressbar" style="width: 100%" ></div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan=2 align="center">
+                                    <div ng-show="login.error_visibility" class="alert {{ login.error_color }} sm"><small>{{login.error_desc}}</small></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan=2 align="center">
+                                    <div ng-show="error" class="alert alert-danger w3-text-red">{{error}}</div>
+                                    <img ng-if="dataLoading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan=2 align="right">
+                                <button type="submit" class="btn btn-sm btn-primary" ng-click="login.login_click()" ng-disabled="login.login_btn_disabled">Login</button>
+                                </td>
+                            </tr>
+                    </tbody>
+                </table>
+
+            
+        </div>
+
+
+    </div>
+
+</div>
+  
+  

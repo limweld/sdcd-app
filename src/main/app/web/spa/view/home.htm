@@ -1,0 +1,47 @@
+
+<div class="w3-main w3-white side-bar-space" >
+
+    <div class="w3-container">
+        
+        <div class="w3-margin">
+            <div class="topnav">
+                <a class="active">Home</a>
+                <div class="topnav-right">
+                    <a href="">{{user.fullname}}</a>
+                    <a href="#!login">Logout <i class="fa fa-sign-out"></i></a>
+                </div>
+            </div> 
+        </div> 
+
+        <div class="w3-container">
+
+            <div class="w3-margin-left w3-margin-right">
+                <select ng-options="item.value for item in mgmt.regCamera track by item.id"  ng-model="mgmt.regCamera.selected" ng-change="mgmt.regCamera.selected_change()">
+                </select>
+            </div>
+
+            <div id="app" class="w3-margin-left w3-margin-right">
+                <input type="hidden" name="suuid" id="suuid" value="CAM 1">
+                <input type="hidden" name="port" id="port" value="80">
+                <input type="hidden" id="localSessionDescription" readonly="true">
+                <input type="hidden" id="remoteSessionDescription">
+                <div id="remoteVideos">
+                    <video id="videoElem" width="700" height="500" controls="true" autoplay></video>
+                </div>
+                <div id="div" hidden></div>
+                <canvas id="canvas" width="700" height="500"></canvas>
+            </div>
+        </div>
+
+        <div class="w3-margin">
+            <div class="w3-card">
+                <header class="w3-container  w3-dark-grey w3-center">
+                    <small>Copyright @ Project Design CPE521 Y2022</small>
+                </header>
+            </div>
+        </div>
+    </div> 
+</div>
+
+<script src="js/tfjs"></script>
+    <script src="js/coco-ssd"></script>

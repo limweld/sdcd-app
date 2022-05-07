@@ -1,0 +1,286 @@
+/* canvas {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+a:hover {
+    text-decoration:none;
+}
+a:visited {
+    text-decoration: none;
+}
+a:active {
+    text-decoration: none;
+}
+a:link {
+    text-decoration: none;
+}
+.loader.ng-animate {
+    -webkit-animation: none 0s; 
+} */
+/* #snackbar {
+    visibility: hidden;
+    min-width: 200px;
+    margin-left: -125px;
+    background-color: #333;
+    color: #fff;
+    text-align: left;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    right: 30px;
+    bottom: 30px;
+    font-size: 17px;
+}
+#snackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+} */
+@-webkit-keyframes fadein {
+    from {bottom: 0; opacity: 0;} 
+    to {bottom: 30px; opacity: 1;}
+}
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+@-webkit-keyframes fadeout {
+    from {bottom: 30px; opacity: 1;} 
+    to {bottom: 0; opacity: 0;}
+}
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+}
+
+/* The actual timeline (the vertical ruler) */
+/* .timeline {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+} */
+/* The actual timeline (the vertical ruler) */
+/* .timeline::after {
+    content: '';
+    position: absolute;
+    width: 6px;
+    background-color: white;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    margin-left: -3px;
+} */
+/* Container around content */
+/* .container {
+    padding: 10px 40px;
+    position: relative;
+    background-color: inherit;
+    width: 50%;
+} */
+/* The circles on the timeline */
+/* .container::after {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    right: -17px;
+    background-color: white;
+    border: 4px solid #e60000;
+    top: 15px;
+    border-radius: 50%;
+    z-index: 0;
+} */
+/* Place the container to the left */
+/* .left {
+    left: 0;
+} */
+/* Place the container to the right */
+/* .right {
+    left: 50%;
+} */
+/* Add arrows to the left container (pointing right) */
+/* .left::before {
+    content: " ";
+    height: 0;
+    position: absolute;
+    top: 18px;
+    width: 0;
+    z-index: 0;
+    right: 30px;
+    border: medium solid white;
+    border-width: 10px 0 10px 10px;
+    border-color: transparent transparent transparent white;
+} */
+/* Add arrows to the right container (pointing left) */
+/* .right::before {
+    content: " ";
+    height: 0;
+    position: absolute;
+    top: 18px;
+    width: 0;
+    z-index: 0;
+    left: 30px;
+    border: medium solid white;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent white transparent transparent;
+} */
+/* Fix the circle for containers on the right side */
+/*.right::after {
+    left: -13px;
+}*/
+/* The actual content */
+/* .content {
+    padding: 20px 30px;
+    background-color: white;
+    position: relative;
+    border-radius: 6px;
+} */
+/* Media queries - Responsive timeline on screens less than 600px wide */
+    /* Place the timelime to the left */
+    /* .timeline::after {
+    left: 31px;
+    } */
+    
+    /* Full-width containers */
+    /* .container {
+    width: 100%;
+    padding-left: 70px;
+    padding-right: 25px;
+    } */
+    
+    /* Make sure that all arrows are pointing leftwards */
+    /* .container::before {
+    left: 60px;
+    border: medium solid white;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent white transparent transparent;
+    } */
+    /* Make sure all circles are at the same spot */
+    /* .left::after, .right::after {
+    left: 18px;
+    }
+    .end::after {
+    left: 18px;
+    } */
+    
+    /* Make all right containers behave like the left ones */
+    /* .right {
+    left: 0%;
+    } */
+
+
+
+
+/* Add a black background color to the top navigation */
+.topnav {
+    background-color: #333;
+    overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+  background-color: #17a2b8;
+  color: white;
+}
+
+/* Right-aligned section inside the top navigation */
+.topnav-right {
+  float: right;
+}
+
+.sidenav-place {
+    z-index:3;
+    width:0px;
+}
+
+.sidenav {
+    color: #fff!important;
+    background-color: #616161!important;
+    overflow: hidden;
+    margin-left:7px;
+}
+
+.sidenav a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+  }
+
+ /* Change the color of links on hover */
+.sidenav a:hover {
+    background-color: #ddd;
+    color: black;
+  }
+  
+/* Add a color to the active/current link */
+/* .sidenav a.active {
+background-color: #ccc;
+color: black;
+} */
+
+/* Right-aligned section inside the top navigation */
+.sidenav-right {
+float: right;
+}
+  
+  
+
+
+
+/* Login Custom Style*/
+.login-container{
+    height:100vh;
+}
+
+.login-panel {
+    width: 20rem; 
+    position: absolute;  
+    top: 50%; 
+    left: 50%; 
+    margin : 0;  
+    -ms-transform: translate(-50%, -50%); 
+    transform: translate(-50%, -50%); 
+}
+
+/* Side Bar Adjustment*/
+.side-bar-space{
+    margin-left:100px;
+}
+
+.cst-cmpt-right{
+    position: relative;
+    float: right;
+}
+
+/* #canvas,
+#video {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px auto;
+}
+
+#canvas {
+  background: black;
+} */

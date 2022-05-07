@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:context="http://www.springframework.org/schema/context" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+    <http:listener-config name="Main_HTTP_Listener_Configuration" host="0.0.0.0" port="${http.port}" doc:name="HTTP Listener Configuration"/>
+    <http:request-config name="Cloudhub_API_HTTP_Request_Configuration" protocol="HTTPS" host="${cloudhub.platform.hostname}" port="${cloudhub.platform.port}" doc:name="HTTP Request Configuration">
+        <http:basic-authentication username="${cloudhub.platform.username}" password="${cloudhub.platform.password}"/>
+    </http:request-config>
+    <apikit:config name="Main_Router_SDCD_App_Config" raml="v1/sdcd-app-system-api.raml" consoleEnabled="false" keepRamlBaseUri="false" doc:name="Router"/>
+    <db:generic-config name="MariaDB_Generic_Database_Configuration" url="jdbc:mysql://${jdbc.maindb.hostname}:${jdbc.maindb.port}/${jdbc.maindb.database}?user=${jdbc.maindb.user}&amp;password=${jdbc.maindb.password}" driverClassName="com.mysql.cj.jdbc.Driver" doc:name="Generic Database Configuration"/>
+    <spring:beans>
+        <context:property-placeholder location="app-${mule.env}-mule.properties, app-init-mule.properties" ignore-unresolvable="true" system-properties-mode="NEVER"/>
+    </spring:beans>
+</mule>

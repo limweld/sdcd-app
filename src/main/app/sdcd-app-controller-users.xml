@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
+	<sub-flow name="createUsersControllerFlow">
+		<json:json-to-object-transformer returnClass="java.util.HashMap" doc:name="JSON to Object"/>
+		<set-variable variableName="dataPasswordInput" value="#[payload.password]" doc:name="Password Variable"/>
+		<custom-transformer mimeType="application/java" class="org.transform.api.UserCreateUpdatePasswordRepository" doc:name="Transform Services"/>
+		<set-variable variableName="dataQueryInput" value="#[payload]" doc:name="Payload Variable"/>
+		<flow-ref name="validateTokenUserControllerFlow" doc:name="validateTokenUserControllerFlow"/>
+		<choice doc:name="Choice">
+			<when expression="#[payload != empty]">
+				<db:insert config-ref="MariaDB_Generic_Database_Configuration" doc:name="Create">
+					<db:parameterized-query><![CDATA[insert into users (
+	username,
+	password,
+	firstname,
+	lastname,
+	details,
+	enabled,
+	created_at
+) values ( 
+	#[flowVars.dataQueryInput.username],
+	#[flowVars.dataQueryInput.password],
+	#[flowVars.dataQueryInput.firstname],
+	#[flowVars.dataQueryInput.lastname],
+	#[flowVars.dataQueryInput.details],
+	#[flowVars.dataQueryInput.enabled],
+	NOW()
+)]]></db:parameterized-query>
+				</db:insert>
+				<logger message="#['Created Users Succesfully']" level="INFO" doc:name="Logger"/>
+			</when>
+			<otherwise>
+				<logger message="#['Create Users No Allowed']" level="INFO" doc:name="Logger"/>
+			</otherwise>
+		</choice>
+	</sub-flow>
+	<sub-flow name="readUsersControllerFlow">
+		<json:json-to-object-transformer returnClass="java.util.HashMap" doc:name="JSON to Object"/>
+		<set-variable variableName="dataQueryInput" value="#[payload]" doc:name="Payload Variable"/>
+		<set-variable variableName="usersEntryFrom" value="#[(flowVars.dataQueryInput.page - 1) * flowVars.dataQueryInput.range]" doc:name="Page From Variable"/>
+		<flow-ref name="validateTokenUserControllerFlow" doc:name="validateTokenUserControllerFlow"/>
+		<choice doc:name="Choice">
+			<when expression="#[payload != empty]">
+				<db:select config-ref="MariaDB_Generic_Database_Configuration" doc:name="Read">
+					<db:dynamic-query><![CDATA[#["select id, username, token, firstname, lastname, details, enabled, created_at, updated_at from users where " + flowVars.dataQueryInput.field_type + " like " + "'%"+flowVars.dataQueryInput.input_value+"%'" + " limit " + flowVars.usersEntryFrom +","+ flowVars.dataQueryInput.range
+]]]></db:dynamic-query>
+				</db:select>
+				<json:object-to-json-transformer doc:name="Object to JSON"/>
+				<logger message="#['Read Users Succesfully']" level="INFO" doc:name="Logger"/>
+			</when>
+			<otherwise>
+				<logger message="#['Read Users No Allowed']" level="INFO" doc:name="Logger"/>
+			</otherwise>
+		</choice>
+	</sub-flow>
+	<sub-flow name="readUsersCountControllerFlow">
+		<json:json-to-object-transformer returnClass="java.util.HashMap" doc:name="JSON to Object"/>
+		<set-variable variableName="dataQueryInput" value="#[payload]" doc:name="Payload Variable"/>
+		<flow-ref name="validateTokenUserControllerFlow" doc:name="validateTokenUserControllerFlow"/>
+		<choice doc:name="Choice">
+			<when expression="#[payload != empty]">
+				<db:select config-ref="MariaDB_Generic_Database_Configuration" doc:name="Read">
+					<db:dynamic-query><![CDATA[#["select count(*) as total from users where " + flowVars.dataQueryInput.field_type + " like " + "'%"+flowVars.dataQueryInput.input_value+"%'"]]]></db:dynamic-query>
+				</db:select>
+				<json:object-to-json-transformer doc:name="Object to JSON"/>
+				<logger message="#['Read Users Succesfully']" level="INFO" doc:name="Logger"/>
+			</when>
+			<otherwise>
+				<logger message="#['Read Users No Allowed']" level="INFO" doc:name="Logger"/>
+			</otherwise>
+		</choice>
+	</sub-flow>
+	<sub-flow name="updateUsersControllerFlow">
+		<json:json-to-object-transformer returnClass="java.util.HashMap" doc:name="JSON to Object"/>
+		<set-variable variableName="dataPasswordInput" value="#[payload.password]" doc:name="Password Variable"/>
+		<custom-transformer mimeType="application/java" class="org.transform.api.UserCreateUpdatePasswordRepository" doc:name="Transform Services"/>
+		<set-variable variableName="dataQueryInput" value="#[payload]" doc:name="Payload Variable"/>
+		<flow-ref name="validateTokenUserControllerFlow" doc:name="validateTokenUserControllerFlow"/>
+		<choice doc:name="Choice">
+			<when expression="#[payload != empty &amp;&amp; flowVars.dataPasswordInput != &quot;&quot;]">
+				<db:update config-ref="MariaDB_Generic_Database_Configuration" doc:name="Update">
+					<db:parameterized-query><![CDATA[UPDATE users SET 
+	firstname=#[flowVars.dataQueryInput.firstname], 
+	lastname=#[flowVars.dataQueryInput.lastname], 
+	details=#[flowVars.dataQueryInput.details], 
+	enabled=#[flowVars.dataQueryInput.enabled],
+	updated_at = NOW()
+WHERE 
+	username=#[flowVars.dataQueryInput.username]
+limit 1]]></db:parameterized-query>
+				</db:update>
+				<logger message="#['Update Users Succesfully']" level="INFO" doc:name="Logger"/>
+			</when>
+			<otherwise>
+				<logger message="#['Update Users No Allowed']" level="INFO" doc:name="Logger"/>
+			</otherwise>
+		</choice>
+	</sub-flow>
+	<sub-flow name="updateUsersPasswordControllerFlow">
+		<json:json-to-object-transformer returnClass="java.util.HashMap" doc:name="JSON to Object"/>
+		<set-variable variableName="dataPasswordInput" value="#[payload.password]" doc:name="Password Variable"/>
+		<custom-transformer mimeType="application/java" class="org.transform.api.UserCreateUpdatePasswordRepository" doc:name="Transform Services"/>
+		<set-variable variableName="dataQueryInput" value="#[payload]" doc:name="Payload Variable"/>
+		<flow-ref name="validateTokenUserControllerFlow" doc:name="validateTokenUserControllerFlow"/>
+		<choice doc:name="Choice">
+			<when expression="#[payload != empty &amp;&amp; flowVars.dataPasswordInput != &quot;&quot;]">
+				<db:update config-ref="MariaDB_Generic_Database_Configuration" doc:name="Update">
+					<db:parameterized-query><![CDATA[UPDATE users SET 
+	password=#[flowVars.dataQueryInput.password],
+	updated_at = NOW()
+WHERE 
+	username=#[flowVars.dataQueryInput.username]
+limit 1]]></db:parameterized-query>
+				</db:update>
+				<logger message="#['Update Users Succesfully']" level="INFO" doc:name="Logger"/>
+			</when>
+			<otherwise>
+				<logger message="#['Update Users No Allowed']" level="INFO" doc:name="Logger"/>
+			</otherwise>
+		</choice>
+	</sub-flow>
+	<sub-flow name="deleteUsersControllerFlow">
+		<json:json-to-object-transformer returnClass="java.util.HashMap" doc:name="JSON to Object"/>
+		<set-variable variableName="dataQueryInput" value="#[payload]" doc:name="Payload Variable"/>
+		<flow-ref name="validateTokenUserControllerFlow" doc:name="validateTokenUserControllerFlow"/>
+		<choice doc:name="Choice">
+			<when expression="#[payload != empty]">
+				<db:delete config-ref="MariaDB_Generic_Database_Configuration" doc:name="Delete">
+					<db:parameterized-query><![CDATA[DELETE FROM users WHERE username=#[flowVars.dataQueryInput.username] limit 1]]></db:parameterized-query>
+				</db:delete>
+				<logger message="#['Delete Users Succesfully']" level="INFO" doc:name="Logger"/>
+			</when>
+			<otherwise>
+				<logger message="#['Delete Users No Allowed']" level="INFO" doc:name="Logger"/>
+			</otherwise>
+		</choice>
+	</sub-flow>
+</mule>
