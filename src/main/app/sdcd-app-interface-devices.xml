@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="post:/devices/service/reload:Main_Router_SDCD_App_Config">
+		<flow-ref name="reloadServiceControllerFlow" doc:name="reloadServiceControllerFlow"/>
+	</flow>
+	<flow name="post:/devices/create:Main_Router_SDCD_App_Config">
+		<flow-ref name="createDevicesControllerFlow" doc:name="createDevicesControllerFlow"/>
+	</flow>
+	<flow name="post:/devices/read:Main_Router_SDCD_App_Config">
+		<flow-ref name="readDevicesControllerFlow" doc:name="readDevicesControllerFlow"/>
+	</flow>
+	<flow name="post:/devices/read/count:Main_Router_SDCD_App_Config">
+		<flow-ref name="readDevicesCountControllerFlow" doc:name="readDevicesCountControllerFlow"/>
+	</flow>
+  	<flow name="post:/devices/update:Main_Router_SDCD_App_Config">
+		<flow-ref name="updateDevicesControllerFlow" doc:name="updateDevicesControllerFlow"/>
+	</flow>
+	<flow name="post:/devices/update/password:Main_Router_SDCD_App_Config">
+		<flow-ref name="updateDevicesPasswordControllerFlow" doc:name="updateDevicesPasswordControllerFlow"/>
+	</flow>
+	<flow name="post:/devices/delete:Main_Router_SDCD_App_Config">
+		<flow-ref name="deleteDevicesControllerFlow" doc:name="deleteDevicesControllerFlow"/>
+	</flow>
+</mule>

@@ -23,33 +23,14 @@ angular.module('Management')
 	   	$(".sidenav-place").css("width", "100px");	
 	   
 	   	$scope.management = {};
-	   	$scope.management.ipCameras = {};
-
-
-		$scope.management.ipCameras.rangeRows = [
-			{ id : 0, value : 5 }, 
-			{ id : 1, value : 10 },
-            { id : 2, value : 20 },
-            { id : 3, value : 50 },
-            { id : 4, value : 100 },
-            { id : 5, value : 200 },
-        ];
-
-	
-
+	 
 		let managementTabs = function( val ){
-			$scope.management.ipCameras.tabActive = (val == "ipCameras" ? "w3-gray" : "w3-black");			
+			$scope.management.devices.tabActive = (val == "devices" ? "w3-gray" : "w3-black");			
 			$scope.management.users.tabActive = (val == "users" ? "w3-gray" : "w3-black");
 			$scope.management.features.tabActive = (val == "features" ? "w3-gray" : "w3-black");
-			$scope.management.ipCameras.tableViewVisibility = (val == "ipCameras" ? true : false);
+			$scope.management.devices.tableViewVisibility = (val == "devices" ? true : false);
 			$scope.management.users.tableViewVisibility = (val == "users" ? true : false);
 			$scope.management.features.tableViewVisibility = (val == "features" ? true : false);
-		}
-
-
-
-		$scope.management.ipCameras.clickTab = function(){
-			managementTabs("ipCameras");
 		}
 
 
@@ -60,7 +41,7 @@ angular.module('Management')
 		}
 
 
-		/*** User Panel TOP ***/
+		/*** Users Panel TOP ***/
 
 		let createModifyUserEntryPanel = function( val ){
 			$scope.management.users.entryListViewPanel = val == "modify" || val == "create" ? false : true;
@@ -118,7 +99,7 @@ angular.module('Management')
             { id : 5, value : 200 },
         ];
 
-		$scope.management.users.selectedRangeRow = $scope.management.ipCameras.rangeRows[0];
+		$scope.management.users.selectedRangeRow = $scope.management.users.rangeRows[0];
 
 		$scope.management.users.selectedRangeRowChange = function(){
 			$scope.management.users.selected = $scope.management.users.selectedRangeRow;
@@ -130,13 +111,10 @@ angular.module('Management')
 		}
 
 		$scope.management.users.searchUserEntryButton = function(){
-			console.log("searchUserEntryButton");
-
 			$scope.management.users.page = 1;
 			usersCount( $scope.management.users.searchUserFieldType, $scope.management.users.searchUserInputField);
 		}
 
-		
 		
 		$scope.management.users.addUserEntryButton = function(){
 
@@ -184,7 +162,6 @@ angular.module('Management')
 		}
 
 		$scope.management.users.deleteUserEntryButton = function(){
-			console.log("deleteUserEntryButton");
 			$("#addUserModal").modal('show'); 
 		}
 
@@ -196,7 +173,6 @@ angular.module('Management')
 
 
 		$scope.management.users.confirmDeleteUserEntryButton = function(){
-			console.log("confirmDeleteUserEntryButton");
 			usersDelete($scope.management.users.user.username);
 			$("#addUserModal").modal('hide'); 
 		}
@@ -240,7 +216,7 @@ angular.module('Management')
 				page,
 				range,
                 function(response){
-                    $scope.user.list = [];
+                    $scope.management.users.list = [];
                     if(response.status == 200){
 
 						$scope.management.users.usersListTransformed = [];
@@ -405,8 +381,9 @@ angular.module('Management')
 		}
 
 		
+		
 
-		/*** User Panel END ***/
+		/*** User Panel Init ***/
 
 		$scope.management.users.entryListViewPanel = true;
 
@@ -418,6 +395,369 @@ angular.module('Management')
 
 		$scope.management.users.selected = $scope.management.users.rangeRows[0];
 
-		managementTabs("ipCameras");
+
+		/*** Users Panel BOTTOM ***/
+
+
+		/*** Devices Panel BOTTOM ***/
+		$scope.management.devices = {};
+		$scope.management.devices.user = {};
+
+		$scope.management.devices.pagination = {};
+        $scope.management.devices.pagination.state = {};
+
+		$scope.management.devices.searchUserFieldType = "username";
+		$scope.management.devices.searchUserInputField = "";
+
+
+		let createModifyDeviceEntryPanel = function( val ){
+			$scope.management.devices.entryListViewPanel = val == "modify" || val == "create" ? false : true;
+			$scope.management.devices.addModifyViewEntryPanel = val == "modify" || val == "create" ? true : false;
+			$scope.management.devices.deleteDeviceEntryButtonVisibility = val == "modify" ? true : false;
+			$scope.management.devices.saveDeviceEntryButtonVisibility = val == "modify" ? true : false;
+			$scope.management.devices.addDeviceEntryButtonVisibility = val == "create" ? true : false;
+			$scope.management.devices.idFieldVisibility = val == "modify" ? true : false;
+			$scope.management.devices.createdAtFieldVisibility = val == "modify" ? true : false;
+			$scope.management.devices.updatedAtFieldVisibility = val == "modify" ? true : false;
+			$scope.management.devices.nameFieldDisabled = val == "modify" ? true : false;
+			$scope.management.devices.credentialsAction = val == "modify" ? "Update" : "Create"; 
+			$scope.management.devices.deviceEntryAction = val == "modify" ? "Update" : "Create";
+		}
+
+		let deviceEntryFeilds = function( actionType, obj ){
+
+			$scope.management.devices.device.id = actionType == "modify" ? obj.id : "";
+			$scope.management.devices.device.name = actionType == "modify" ? obj.name : "";
+			$scope.management.devices.device.username = actionType == "modify" ? obj.username : "";
+			$scope.management.devices.device.ipAddress = actionType == "modify" ? obj.ip : "";
+			$scope.management.devices.device.password = actionType == "modify" ? obj.password : "";
+			$scope.management.devices.device.confirmPassword = actionType == "modify" ? obj.confirmPassword : "";
+			$scope.management.devices.device.protocol = actionType == "modify" ? obj.protocol : "";
+			$scope.management.devices.device.port = actionType == "modify" ? obj.port : "";
+			$scope.management.devices.device.details = actionType == "modify" ? obj.details : "";
+			$scope.management.devices.device.onDemand = actionType == "modify" ? (obj.onDemand == 1 ? true : false): "";
+			$scope.management.devices.device.createdAt = actionType == "modify" ? ( obj.created_at != undefined ? new Date(obj.created_at).toUTCString(): "") : "";
+			$scope.management.devices.device.updatedAt = actionType == "modify" ? ( obj.updated_at != undefined ? new Date(obj.updated_at).toUTCString(): "") : "";
+
+			$scope.management.devices.errorAddUserValidationMessageVisibility = false;
+		}
+
+		$scope.management.devices.clickTab = function(){
+			$scope.management.devices.page = 1;
+			createModifyDeviceEntryPanel("back");
+			devicesCount($scope.management.devices.searchDeviceFieldType, $scope.management.devices.searchDeviceInputField);
+			$scope.management.devices.searchDeviceInputField = "";
+			managementTabs("devices");
+		}
+
+		$scope.management.devices.rangeRows = [
+			{ id : 0, value : 5 }, 
+			{ id : 1, value : 10 },
+            { id : 2, value : 20 },
+            { id : 3, value : 50 },
+            { id : 4, value : 100 },
+            { id : 5, value : 200 },
+        ];
+
+		let devicesCount = function( field, search ){
+            $scope.management.devices.loadingListEntryVisibility = true;
+            management_model.devicesReadCount(
+                currentUser.token,
+				field,
+				search,
+                function(response){
+                    if(response.status == 200 && response.data[0] != undefined){
+                        $scope.management.devices.totalrows = response.data[0].total;
+                        $scope.management.devices.pagination.state = management_model.pagination_state($scope.management.devices.page, $scope.management.devices.totalrows ,$scope.management.devices.selected.value);
+						devicesList( $scope.management.devices.searchDeviceFieldType, $scope.management.devices.searchDeviceInputField, $scope.management.devices.page, $scope.management.devices.selected.value);
+                    }
+                }
+            );
+        }
+
+		
+		let devicesListTransformed = function( obj ){
+			$scope.management.devices.device = obj;
+			$scope.management.devices.device.enabledCheck =  obj.onDemand == 1 ? true: false;
+			$scope.management.devices.devicesListTransformed.push($scope.management.devices.device);			
+		}
+
+		let devicesList = function( field, search, page, range ){
+            management_model.devicesRead(
+                currentUser.token,
+				field,
+				search,
+				page,
+				range,
+                function(response){
+					$scope.management.devices.list = [];
+                    if(response.status == 200){ 
+
+						$scope.management.devices.devicesListTransformed = [];
+						let dataList = response.data;
+
+						dataList.forEach(devicesListTransformed);
+
+                        $scope.management.devices.list = response.data;                        
+                        $scope.management.devices.showfrom = $scope.management.devices.list.length == 0 ? 0 : ((page - 1) * range) + 1;
+                        $scope.management.devices.showto = ((page - 1) * range) + $scope.management.devices.list.length;
+                        //$scope.management.devices.search = $scope.management.devices.search_temp;
+                        $scope.management.devices.loadingListEntryVisibility = false;
+                    }
+                }
+            );
+        }
+
+		$scope.management.devices.pagination.first_click =  function(){
+			if($scope.management.devices.pagination.state.currentPage > 1){
+				$scope.management.devices.page = 1;
+				devicesCount( $scope.management.devices.searchDeviceFieldType, $scope.management.devices.searchDeviceInputField);
+			}	
+		}
+		
+		$scope.management.devices.pagination.previous_click =  function(){
+			if($scope.management.devices.pagination.state.currentPage > 1){
+				$scope.management.devices.page = $scope.management.devices.pagination.state.currentPage - 1;
+				devicesCount( $scope.management.devices.searchDeviceFieldType, $scope.management.devices.searchDeviceInputField);
+			}
+		}
+		
+		$scope.management.devices.pagination.previouspages_click =  function(){
+			if($scope.management.devices.pagination.state.currentPage > 1){
+				$scope.management.devices.page = $scope.management.devices.pagination.state.currentPageFrom - 1;
+				devicesCount( $scope.management.devices.searchDeviceFieldType, $scope.management.devices.searchDeviceInputField);
+			}
+		}
+		
+		$scope.management.devices.pagination.pages_click = function(value){
+			$scope.management.devices.page = value.page;
+			devicesCount( $scope.management.devices.searchDeviceFieldType, $scope.management.devices.searchDeviceInputField);
+		}
+		
+		$scope.management.devices.pagination.nextpages_click =  function(){
+				
+			if($scope.management.devices.pagination.state.currentPage < $scope.management.devices.pagination.state.totalPages){
+				
+				$scope.management.devices.page = $scope.management.devices.pagination.state.currentPageTo + 1;
+				devicesCount( $scope.management.devices.searchDeviceFieldType, $scope.management.devices.searchDeviceInputField);
+			}
+		}
+		
+		$scope.management.devices.pagination.next_click = function(){	
+			if($scope.management.devices.pagination.state.currentPage < $scope.management.devices.pagination.state.totalPages){
+				$scope.management.devices.page = $scope.management.devices.pagination.state.currentPage + 1,
+				devicesCount( $scope.management.devices.searchDeviceFieldType, $scope.management.devices.searchDeviceInputField);
+			}
+		}
+		
+		$scope.management.devices.pagination.last_click = function(){
+			if( $scope.management.devices.pagination.state.currentPage < $scope.management.devices.pagination.state.totalPages){
+				$scope.management.devices.page = $scope.management.devices.pagination.state.totalPages;
+				devicesCount( $scope.management.devices.searchDeviceFieldType, $scope.management.devices.searchDeviceInputField);
+			}
+		}
+
+
+		$scope.management.devices.createDeviceEntryButton = function(){
+			createModifyDeviceEntryPanel("create");
+			deviceEntryFeilds("create", $scope.management.devices.device);
+		}
+
+		$scope.management.devices.searchDeviceEntryButton = function(){
+			$scope.management.devices.page = 1;
+			devicesCount( $scope.management.devices.searchDeviceFieldType, $scope.management.devices.searchDeviceInputField);
+		}
+
+
+		$scope.management.devices.deleteDeviceEntryButton = function(){
+			$("#addDeviceModal").modal('show'); 
+		}
+
+		$scope.management.devices.cancelDeviceEntryButton = function(){
+			createModifyDeviceEntryPanel("back");
+			$scope.management.devices.clickTab();
+		}
+		
+		$scope.management.devices.modifyEntryClickButton = function( obj ){
+			createModifyDeviceEntryPanel("modify");
+			deviceEntryFeilds("modify", obj);
+		}
+
+		$scope.management.devices.updateCredentialsButton = function(){
+			$("#updateUserCredentialsModal").modal('show'); 
+			$scope.management.devices.device.password = "";
+			$scope.management.devices.device.confirmPassword = "";
+			$scope.management.devices.errorPasswordValidationMessageVisibility = false;
+		}
+
+		$scope.management.devices.selectedRangeRowChange = function(){
+			$scope.management.devices.selected = $scope.management.devices.selectedRangeRow;
+		}
+
+		let devicesCreate = function(name, ipAddress, onDemand, protocol, port, username, password, details){
+			$scope.management.devices.loadingActionEntryVisibility = true;
+			management_model.devicesCreate(
+				currentUser.token,
+				name, 
+				ipAddress,
+				onDemand, 
+				protocol,
+				port, 
+				username,
+				password,
+				details,
+				function(response){
+					if(response.status == 200){
+						$scope.management.devices.loadingActionEntryVisibility = false;
+						$scope.management.devices.clickTab();
+					}
+				}
+			);
+		}
+
+		let devicesUpdate = function(name, ipAddress, onDemand, protocol, port, details){
+			$scope.management.devices.loadingActionEntryVisibility = true;
+			management_model.devicesUpdate(
+                currentUser.token,
+				name,
+				ipAddress,
+				onDemand,
+				protocol,
+				port,
+				details,
+				function(response){
+					if(response.status == 200){
+						$scope.management.devices.loadingActionEntryVisibility = false;
+						$scope.management.devices.clickTab();
+					}
+				}
+			);
+		}
+
+		let devicesUpdatePassword = function(name, username, password){
+			$scope.management.devices.loadingCredentialsUpdateActionEntryVisibility = true;
+			management_model.devicesUpdatePassword(
+                currentUser.token,
+				name,
+				username, 
+				password,
+				function(response){
+					if(response.status == 200){
+						$scope.management.devices.loadingCredentialsUpdateActionEntryVisibility = false;
+						$("#updateUserCredentialsModal").modal('hide'); 
+					}
+				}
+			);
+		}
+
+		let devicesDelete = function(name){
+			$scope.management.devices.loadingActionEntryVisibility = true;
+			management_model.devicesDelete(
+                currentUser.token,
+				name,
+				function(response){
+					if(response.status == 200){
+						$scope.management.devices.loadingActionEntryVisibility = false;
+						$scope.management.devices.clickTab();
+					}
+				}
+			);
+		}
+
+		let devicesReload = function(){
+			$("#addReloadModal").modal('show'); 
+			$scope.management.devices.loadingReloadVisibility = true;
+			management_model.devicesReload(
+                currentUser.token,
+				function(response){
+					if(response.status == 200){
+						
+						setTimeout(function() {
+							$scope.management.devices.loadingReloadVisibility = false;
+							$("#addReloadModal").modal('hide'); 
+							$scope.management.devices.clickTab();
+							$scope.$digest();
+						}, 5000);
+
+						
+					}
+				}
+			);
+		}
+
+		$scope.management.devices.confirmDeleteDeviceEntryButton = function(){
+			devicesDelete($scope.management.devices.device.name);
+			$("#addDeviceModal").modal('hide'); 
+		}
+
+		$scope.management.devices.updateDeviceEntryButton = function(){
+			console.log("updateDeviceEntryButton")
+			devicesUpdate(
+				$scope.management.devices.device.name, 
+				$scope.management.devices.device.ipAddress, 
+				$scope.management.devices.device.onDemand == true ? 1 : 0, 
+				$scope.management.devices.device.protocol, 
+				$scope.management.devices.device.port, 
+				$scope.management.devices.device.details 
+			);
+		}
+
+		$scope.management.devices.credentialsConfirmEntryButton = function(){
+			if($scope.management.devices.credentialsAction == "Update"){
+				if($scope.management.devices.device.confirmPassword == $scope.management.devices.device.password && $scope.management.devices.device.confirmPassword != ""){
+					devicesUpdatePassword(
+						$scope.management.devices.device.name, 
+						$scope.management.devices.device.username, 
+						$scope.management.devices.device.confirmPassword
+					);
+				}else{
+					$scope.management.devices.errorCredentialsValidationMessageVisibility = true;
+					$scope.management.devices.errorCredentialsValidationMessage = "Confirmed Password not Equal!";
+				}
+			}
+
+			if($scope.management.devices.credentialsAction == "Create"){
+				if($scope.management.devices.device.confirmPassword == $scope.management.devices.device.password && $scope.management.devices.device.confirmPassword != ""){
+					$("#updateUserCredentialsModal").modal('hide'); 
+				}else{
+					$scope.management.devices.errorCredentialsValidationMessageVisibility = true;
+					$scope.management.devices.errorCredentialsValidationMessage = "Confirmed Password not Equal!";
+				}
+			}
+
+		}
+
+		$scope.management.devices.addDeviceEntryButton = function(){
+			devicesCreate(
+				$scope.management.devices.device.name, 
+				$scope.management.devices.device.ipAddress, 
+				$scope.management.devices.device.onDemand == true ? 1 : 0, 
+				$scope.management.devices.device.protocol, 
+				$scope.management.devices.device.port, 
+				$scope.management.devices.device.username, 
+				$scope.management.devices.device.confirmPassword, 
+				$scope.management.devices.device.details
+			);
+		}
+
+		$scope.management.devices.reloadDeviceEntryButton = function(){
+			console.log("reloadDeviceEntryButton");
+			devicesReload();
+		}
+
+		$scope.management.devices.selectedRangeRow = $scope.management.devices.rangeRows[0];
+
+		$scope.management.devices.entryListViewPanel = true;
+
+		$scope.management.devices.loadingActionEntryVisibility = false;
+		$scope.management.devices.loadingListEntryVisibility = false;
+
+		$scope.management.devices.searchDeviceFieldType = "name";
+		$scope.management.devices.searchDeviceInputField = "";
+
+		$scope.management.devices.selected = $scope.management.devices.rangeRows[0];
+
+		$scope.management.devices.clickTab();
+
 	}
 ]);

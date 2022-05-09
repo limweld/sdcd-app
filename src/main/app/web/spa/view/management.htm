@@ -16,66 +16,204 @@
             <div class="w3-card-4">
                 
                 <div class="w3-bar w3-black">
-                    <button class="w3-bar-item w3-button {{management.ipCameras.tabActive}}" ng-click="management.ipCameras.clickTab()">IP Cameras</button>
+                    <button class="w3-bar-item w3-button {{management.devices.tabActive}}" ng-click="management.devices.clickTab()">IP Cameras</button>
                     <button class="w3-bar-item w3-button {{management.users.tabActive}}" ng-click="management.users.clickTab()">Users</button>
                     <button class="w3-bar-item w3-button {{management.features.tabActive}}" ng-click="management.features.clickTab()">Features</button>
                 </div>
-    
-                <div id="IP_Cameras" class="w3-container" ng-show="management.ipCameras.tableViewVisibility">
-                
-                    <div class="w3-panel row">
+
+                <!-- Devices Form Start -->
+                <div id="Devices" class="w3-container" ng-show="management.devices.tableViewVisibility">
+
+                    <div class="w3-panel row" ng-show="management.devices.entryListViewPanel">
                         <form class="form-inline">
                             <label>Rows</label>
-                            <select id="inputState" class="form-control">
-                                <option selected>Choose...</option>
-                                <option>...</option>
-                            </select>
+                            <select name="dataTable_length" aria-controls="dataTable" class="custom-select custom-select-sm form-control form-control-sm" ng-options="item.value for item in management.devices.rangeRows track by item.id"  ng-model="management.devices.selectedRangeRow" ng-change="management.devices.selectedRangeRowChange()">
+                            </select> Rows
                             <div  class="cst-cmpt-right">
-                                <div class="btn btn-sm btn-primary"><i class="fa fa-refresh"></i> Reload</div>
-                                <div class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Create</div>
-                                <div class="btn btn-sm btn-primary"><i class="fa fa-search"></i> Search</div>
-                                <input type="text" class="form-control">
+                                <div class="btn btn-sm btn-primary" ng-click="management.devices.reloadDeviceEntryButton()"><i class="fa fa-refresh"></i> Reload Config</div>
+                                <div class="btn btn-sm btn-primary" ng-click="management.devices.createDeviceEntryButton()"><i class="fa fa-plus"></i> Create</div>
+                                <div class="btn btn-sm btn-primary" ng-click="management.devices.searchDeviceEntryButton()"><i class="fa fa-search"></i> Search</div>
+                                <input type="text" class="form-control" ng-model="management.devices.searchDeviceInputField">
                             </div>
                         </form>
                     </div>
 
-                    <table class="w3-table w3-bordered w3-hoverable w3-small w3-border">
+                    <div class="form-group row" ng-show="management.devices.loadingListEntryVisibility">
+                        <div class="col-sm-12">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped active" style="width:100%"></div>
+                        </div>
+                        </div>
+                    </div>
+
+                    <table class="w3-table w3-bordered w3-hoverable w3-small w3-border" ng-show="management.devices.entryListViewPanel">
                         <thead>
                             <tr class="w3-light-grey">
-                                <th>Name</th>
-                                <th>Ip</th>
+                                <th>IP Camera Name</th>
                                 <th>Details</th>
-                                <th><i class="fa fa-info-circle" ></i></th>
+                                <th><i class="fa fa-info-circle"  ></i></th>
+                                <th style="text-align: center;"><i class="fa fa-edit"></i></th>
                             </tr>
                         </thead>
-                        <tr>
-                            <td>CAM_1</td>
-                            <td>10.1.1.1</td>
-                            <td>WasteGas.com</td>
+                        <tr ng-repeat="x in management.devices.devicesListTransformed">
+                            <td>{{x.name}}</td>
+                            <td>{{x.details}}</td>
                             <td>
                                 <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input">
+                                    <input type="checkbox" class="custom-control-input" disabled="disabled" ng-checked={{x.enabledCheck}}>
                                 </div>
                             </td>
-                        </tr>
-                        <tr>
-                            <td>CAM_2</td>
-                            <td>10.1.1.1</td>
-                            <td>WasteGas.com</td>
-                            <td>
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input">
+                            <td style="text-align: center;">
+                                <div class="w3-button w3-tiny w3-blue" ng-click="management.devices.modifyEntryClickButton(x)">
+                                    <i class="fa fa-edit"></i> Edit 
                                 </div>
                             </td>
                         </tr>
                     </table>
 
-                    <div class="w3-panel row">
-
+                    <div class="w3-panel row" ng-show="management.devices.entryListViewPanel">
+                        <form class="form-inline">
+                            <ul class="pagination pagination-sm">
+                            <li class="page-item" ng-show="management.devices.pagination.state.first" ng-click="management.devices.pagination.first_click()">
+                                <a href="" class="page-link"><i class="fa fa-angle-double-left"></i></a>
+                            </li>
+                            <li class="page-item" ng-show="management.devices.pagination.state.previous" ng-click="management.devices.pagination.previous_click()">
+                                <a href="" class="page-link"><i class="fa fa-angle-left"></i></a>
+                            </li>
+                            <li class="page-item" ng-show="management.devices.pagination.state.previousPages" ng-click="management.devices.pagination.previouspages_click()">
+                                <a href="" class="page-link">..</a>
+                            </li>
+                            <li class="page-item {{ x.active }}" ng-repeat="x in management.devices.pagination.state.pages" ng-click="management.devices.pagination.pages_click(x)">
+                                <a href="" class="page-link">{{ x.page }}</a>
+                            </li>
+                            <li class="page-item">
+                                <a href="" class="page-link" ng-show="management.devices.pagination.state.nextPages" ng-click="management.devices.pagination.nextpages_click()">..</a>
+                            </li>
+                            <li class="page-item next" ng-show="management.devices.pagination.state.next" ng-click="management.devices.pagination.next_click()">
+                                <a href="" class="page-link"><i class="fa fa-angle-right"></i></a>
+                            </li>
+                            <li class="page-item" ng-show="management.devices.pagination.state.last" ng-click="management.devices.pagination.last_click()">
+                                <a href="" class="page-link"><i class="fa fa-angle-double-right"></i></a>
+                            </li>
+                            </ul>
+                            <div class="cst-cmpt-right w3-margin-top">
+                                Showing {{ management.devices.showfrom }} to {{ management.devices.showto }} of {{ management.devices.totalrows }} entries
+                            </div>  
+                        </form>
                     </div>
-            
-                </div>
 
+                    <div class="w3-panel row" ng-show="management.devices.addModifyViewEntryPanel">
+
+                        <form>
+                            <div class="form-group row">
+                                <div class="col-sm-9">
+                                    <h3><b>{{ management.devices.userEntryAction }} Camera Device</b></h3>
+                                </div>
+                            </div>
+
+                            <div class="form-group row" ng-show="management.devices.loadingActionEntryVisibility">
+                            <div class="col-sm-12">
+                                <div class="progress">
+                                <div class="progress-bar progress-bar-striped active" style="width:100%"></div>
+                                </div>
+                            </div>
+                            </div>
+
+                            <div class="form-group row" ng-show="management.devices.idFieldVisibility">
+                                <label class="col-sm-3 col-form-label col-form-label-sm">Id</label>
+                                <div class="col-sm-9">
+                                <input type="input" class="form-control form-control-sm" ng-model="management.devices.device.id" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                            <label class="col-sm-3 col-form-label col-form-label-sm">Name</label>
+                            <div class="col-sm-9">
+                                <input type="input" class="form-control form-control-sm" ng-model="management.devices.device.name" ng-disabled="management.devices.nameFieldDisabled">
+                            </div>
+                            </div>
+
+                            <div class="form-group row">
+                            <label class="col-sm-3 col-form-label col-form-label-sm">Credentials</label>
+                            <div class="col-sm-9">
+                                <div class="w3-button w3-tiny w3-blue" ng-click="management.devices.updateCredentialsButton()">
+                                    <i class="fa fa-key"></i> {{ management.devices.credentialsAction }} 
+                                </div>
+                            </div>
+                            </div>
+
+                            <div class="form-group row">
+                            <label class="col-sm-3 col-form-label col-form-label-sm">IP Address</label>
+                            <div class="col-sm-9">
+                                <input type="input" class="form-control form-control-sm" ng-model="management.devices.device.ipAddress" >
+                            </div>
+                            </div>
+
+                            <div class="form-group row">
+                            <label class="col-sm-3 col-form-label col-form-label-sm">Protocol</label>
+                                <div class="col-sm-9">
+                                    <input type="input" class="form-control form-control-sm" ng-model="management.devices.device.protocol" >
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                            <label class="col-sm-3 col-form-label col-form-label-sm">Port</label>
+                                <div class="col-sm-9">
+                                    <input type="input" class="form-control form-control-sm" ng-model="management.devices.device.port" >
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                            <label class="col-sm-3 col-form-label col-form-label-sm">Details</label>
+                            <div class="col-sm-9">
+                                <input type="input" class="form-control form-control-sm" ng-model="management.devices.device.details">
+                            </div>
+                            </div>
+
+                            <div class="form-group row">
+                            <label class="col-sm-3 col-form-label col-form-label-sm">On Demand</label>
+                            <div class="col-sm-9">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" ng-model="management.devices.device.onDemand">
+                                </div>
+                            </div>
+                            </div>
+
+                            <div class="form-group row" ng-show="management.devices.createdAtFieldVisibility">
+                            <label class="col-sm-3 col-form-label col-form-label-sm">Created At</label>
+                            <div class="col-sm-9">
+                                <input type="input" class="form-control form-control-sm" ng-model="management.devices.device.createdAt" readonly>
+                            </div>
+                            </div>
+
+                            <div class="form-group row" ng-show="management.devices.updatedAtFieldVisibility">
+                            <label class="col-sm-3 col-form-label col-form-label-sm">Updated At</label>
+                            <div class="col-sm-9">
+                                <input type="input" class="form-control form-control-sm" ng-model="management.devices.device.updatedAt" readonly>
+                            </div>
+                            </div>
+
+
+                            <div class="form-group row" ng-show="management.devices.errorAddUserValidationMessageVisibility">
+                                <label class="alert alert-danger col-sm-12 col-form-label col-form-label-sm">{{ management.devices.errorAddUserValidationMessage }}</label>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="w3-panel row" ng-show="management.devices.addModifyViewEntryPanel">
+                        <form class="form-inline">
+                            <div  class="cst-cmpt-right">
+                                <div class="btn btn-sm btn-info" ng-click="management.devices.cancelDeviceEntryButton()"><i class="fa fa-arrow-left"></i> Back</div>
+                                <div class="btn btn-sm btn-danger" ng-click="management.devices.deleteDeviceEntryButton()" ng-show="management.devices.deleteDeviceEntryButtonVisibility"><i class="fa fa-trash"></i> Delete</div>
+                                <div class="btn btn-sm btn-primary" ng-click="management.devices.updateDeviceEntryButton()" ng-show="management.devices.saveDeviceEntryButtonVisibility"><i class="fa fa-save"></i> Save</div>
+                                <div class="btn btn-sm btn-primary" ng-click="management.devices.addDeviceEntryButton()" ng-show="management.devices.addDeviceEntryButtonVisibility"><i class="fa fa-plus-circle"></i> Add</div>
+                            </div>
+                        </form>
+                    </div>            
+                </div>
+                <!-- Devices Form End -->
+
+                <!-- Users Form Start -->
                 <div id="Users" class="w3-container" ng-show="management.users.tableViewVisibility">
                 
                     <div class="w3-panel row" ng-show="management.users.entryListViewPanel">
@@ -255,10 +393,9 @@
                                 <div class="btn btn-sm btn-primary" ng-click="management.users.addUserEntryButton()" ng-show="management.users.addUserEntryButtonVisibility"><i class="fa fa-plus-circle"></i> Add</div>
                             </div>
                         </form>
-                    </div>
-
-            
+                    </div>            
                 </div>
+                <!-- Users Form End -->
 
 
             </div>
@@ -282,6 +419,30 @@
                     <div class="modal-footer">
                         <button class="btn btn-primary" type="button" data-dismiss="modal"><i class="fa fa-info"></i> No</button>
                         <button class="btn btn-danger" type="button" ng-click="management.users.confirmDeleteUserEntryButton()"><i class="fa fa-warning"></i> Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Add Device Modal -->
+        <div class="modal fade" id="addDeviceModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <form class="form-inline">
+                            <label>Are you Sure?</label>
+                            <div  class="cst-cmpt-right">
+                                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-body">Deleting Device <b> {{management.devices.device.name}} </b> Entry.</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="button" data-dismiss="modal"><i class="fa fa-info"></i> No</button>
+                        <button class="btn btn-danger" type="button" ng-click="management.devices.confirmDeleteDeviceEntryButton()"><i class="fa fa-warning"></i> Yes</button>
                     </div>
                 </div>
             </div>
@@ -337,6 +498,93 @@
                     <button class="btn btn-primary" type="button" ng-click="management.users.passwordConfirmEntryButton()"><i class="fa fa-save"></i> Save</button>
                 </div>
             </div>
+            </div>
+        </div>
+
+        <!-- Update Password Modal -->
+        <div class="modal fade" id="updateUserCredentialsModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <form class="form-inline">
+                        <label>{{ management.devices.credentialsAction }} Password</label>
+                        <div  class="cst-cmpt-right">
+                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-body">
+                    <form>
+
+                        <div class="form-group row" ng-show="management.devices.loadingCredentialsUpdateActionEntryVisibility">
+                            <div class="col-sm-12">
+                                <div class="progress">
+                                <div class="progress-bar progress-bar-striped active" style="width:100%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label col-form-label-sm">Username</label>
+                            <div class="col-sm-6">
+                            <input type="input" class="form-control form-control-sm" ng-model="management.devices.device.username">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label col-form-label-sm">Password</label>
+                            <div class="col-sm-6">
+                            <input type="password" class="form-control form-control-sm" ng-model="management.devices.device.password" placeholder="••••••••••••••••">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-sm-6 col-form-label col-form-label-sm">Confirm Password</label>
+                            <div class="col-sm-6">
+                                <input type="password" class="form-control form-control-sm" ng-model="management.devices.device.confirmPassword" placeholder="••••••••••••••••">
+                            </div>
+                        </div>
+
+                        <div class="form-group row" ng-show="management.devices.errorCredentialsValidationMessageVisibility">
+                            <label class="alert alert-danger col-sm-12 col-form-label col-form-label-sm">{{ management.devices.errorCredentialsValidationMessage }}</label>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-info" type="button" data-dismiss="modal"><i class="fa fa-arrow-left"></i> Back</button>
+                    <button class="btn btn-primary" type="button" ng-click="management.devices.credentialsConfirmEntryButton()"><i class="fa fa-save"></i> Save</button>
+                </div>
+            </div>
+            </div>
+        </div>
+
+         <!-- Add Reload Modal -->
+        <div class="modal fade" id="addReloadModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <form class="form-inline">
+                            <label> RTSP GO Runtime Reloading</label>
+                        </form>
+                    </div>
+                    <div class="modal-body"> 
+
+                        <div class="form-group row" ng-show="management.devices.loadingReloadVisibility">
+                            <div class="col-sm-12">
+                              <div class="progress">
+                                <div class="progress-bar progress-bar-striped active" style="width:100%"></div>
+                              </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                      
+                    </div>
+                </div>
             </div>
         </div>
     

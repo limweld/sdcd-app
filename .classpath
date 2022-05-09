@@ -6,8 +6,13 @@
   <classpathentry kind="src" path="src/test/java" output="target/test-classes"/>
   <classpathentry kind="src" path="src/test/resources" output="target/test-classes" excluding="**/*.java"/>
   <classpathentry kind="output" path="target/classes"/>
+  <classpathentry kind="var" path="M2_REPO/org/bouncycastle/bcpkix-jdk15on/1.52/bcpkix-jdk15on-1.52.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/bouncycastle/bcprov-jdk15on/1.52/bcprov-jdk15on-1.52.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mule/tools/devkit/mule-devkit-shade/3.6.1/mule-devkit-shade-3.6.1.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/mule/modules/ssh/multiplexer/mule-module-SshMultiplexer/1.2.2/mule-module-SshMultiplexer-1.2.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/mysql/mysql-connector-java/8.0.27/mysql-connector-java-8.0.27.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/google/protobuf/protobuf-java/3.11.4/protobuf-java-3.11.4.jar"/>
+  <classpathentry kind="var" path="M2_REPO/net/schmizz/sshj/0.10.0/sshj-0.10.0.jar"/>
   <classpathentry kind="con" path="MULE_RUNTIME"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 </classpath>

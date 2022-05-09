@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="post:/features/read:Main_Router_SDCD_App_Config">
+		<flow-ref name="readFeaturesControllerFlow" doc:name="readFeaturesControllerFlow"/>
+	</flow>
+	<flow name="post:/features/update/create:Main_Router_SDCD_App_Config">
+		<flow-ref name="createUpdateFeaturesControllerFlow" doc:name="createUpdateFeaturesControllerFlow"/>
+	</flow>
+	<flow name="post:/features/update/delete:Main_Router_SDCD_App_Config">
+		<flow-ref name="deleteUpdateFeaturesControllerFlow" doc:name="deleteUpdateFeaturesControllerFlow"/>
+	</flow>
+</mule>

@@ -173,7 +173,160 @@ angular.module('Management')
 			   function(response){ callback(response); }
 			);		
         }
-        
+
+        service.devicesReadCount = function(
+            token,
+			field,
+			search,
+			callback		
+		){
+			$http.post(
+                'api/devices/read/count',
+                { 
+					api_token : token,
+                    field_type : field,
+					input_value : search
+                }
+			).then(
+			   function(response){ callback(response); }, 
+			   function(response){ callback(response); }
+			);			
+        }
+
+		service.devicesRead = function(
+            token,
+			field,
+			search,
+			page,
+			range,
+			callback		
+		){
+			$http.post(
+                'api/devices/read',
+                { 
+					api_token : token,
+                    field_type : field,
+					input_value : search,
+					page : page,
+    				range : range
+                }
+			).then(
+			   function(response){ callback(response); }, 
+			   function(response){ callback(response); }
+			);			
+        }
+
+        service.devicesCreate = function(
+            token,
+            name,
+            ip,
+            onDemand,
+            protocol,
+            port,
+            username,
+            password,
+            details,
+            callback
+        ){
+            $http.post(
+                'api/devices/create',
+                { 
+                    api_token: token,
+                    name: name,
+                    ip: ip,
+                    onDemand: onDemand,
+                    protocol: protocol,
+                    port: port,
+                    username: username,
+                    password: password,
+                    details: details
+                }
+			).then(
+			   function(response){ callback(response); }, 
+			   function(response){ callback(response); }
+			);		
+        }
+
+        service.devicesUpdate = function(
+            token,
+            name,
+            ipAddress,
+            onDemand,
+            protocol,
+            port,
+            details,
+            callback
+        ){
+            $http.post(
+                'api/devices/update',
+                { 
+                    api_token: token,
+                    name: name,
+                    ipAddress: ipAddress,
+                    onDemand: onDemand,
+                    protocol: protocol,
+                    port: port,
+                    details: details
+                }
+			).then(
+			   function(response){ callback(response); }, 
+			   function(response){ callback(response); }
+			);			
+        }
+
+        service.devicesUpdatePassword = function(
+            token,
+            name,
+            username,
+            password,
+            callback
+        ){
+            $http.post(
+                'api/devices/update/password',
+                { 
+                    api_token: token,
+                    name: name,
+                    username: username,
+                    password: password
+                }
+			).then(
+			   function(response){ callback(response); }, 
+			   function(response){ callback(response); }
+			);		
+        }
+
+        service.devicesDelete = function(
+            token,
+            name,
+            callback
+        ){
+            $http.post(
+                'api/devices/delete',
+                { 
+					api_token: token,
+                    name: name           
+                }
+			).then(
+			   function(response){ callback(response); }, 
+			   function(response){ callback(response); }
+			);		
+        }
+
+        service.devicesReload = function(
+            token,
+            callback
+        ){
+            $http.post(
+                'api/devices/service/reload',
+                { 
+					api_token: token
+                }
+			).then(
+			   function(response){ callback(response); }, 
+			   function(response){ callback(response); }
+			);		
+        }
+
 		return service;
 	}
 ]);	
