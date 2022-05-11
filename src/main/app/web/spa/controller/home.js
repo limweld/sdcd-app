@@ -300,111 +300,111 @@ angular.module('Main')
 		};
 
 
-				// Create a client instance
-		let client = new Paho.MQTT.Client("192.168.1.150", 9001, "clientId");
+		// 		// Create a client instance
+		// let client = new Paho.MQTT.Client("192.168.1.150", 9001, "clientId");
 
-		// client.startTrace();
+		// // client.startTrace();
+
+		// // // set callback handlers
+		// // client.onConnectionLost = onConnectionLost;
+		// // client.onMessageArrived = onMessageArrived;
+		
+		// // // connect the client
+		// // // client.connect({onSuccess:onConnect,
+		// // // 				useSSL: true});
+
+		// // client.connect({
+		// // 	onSuccess: onConnect, 
+		// // 	userName : "mulemq",
+		// // 	password : "!Y2df@35836"
+		// // });
+
+		// // console.log("attempting to connect...")
+		
+		
+		// // // called when the client connects
+		// // function onConnect() {
+		// //   // Once a connection has been made, make a subscription and send a message.
+		// //   console.log("onConnect");
+		// //   client.subscribe("/World");
+		// //   let message = new Paho.MQTT.Message("Hello");
+		// //   message.destinationName = "/World";
+		// //   //client.send(message);
+		// // //console.log(client.getTraceLog());
+		
+		// //   //client.getTraceLog().forEach(function(line){
+		// //   //  console.log('Trace: ' + line)
+		// //   //});
+		// //   //newMessage = new Paho.MQTT.Message("Sent using synonyms!");
+		// //   //newMessage.topic = "/World";
+		// //   client.publish(message)
+		// //   client.publish("/World", "Hello from a better publish call!", 1, false)
+		
+		// //   topicMessage = new Paho.MQTT.Message("This is a message where the topic is set by setTopic");
+		// //   topicMessage.topic = "/World";
+		// //   client.publish(topicMessage)
+		
+		
+		// // }
+		
+		// // // called when the client loses its connection
+		// // function onConnectionLost(responseObject) {
+		// //   if (responseObject.errorCode !== 0) {
+		// // 	console.log("onConnectionLost:"+responseObject.errorMessage);
+		// //   }
+		// // }
+		
+		// // // called when a message arrives
+		// // function onMessageArrived(message) {
+		// //   console.log("onMessageArrived:"+message.payloadString);
+		// // }
 
 		// // set callback handlers
 		// client.onConnectionLost = onConnectionLost;
 		// client.onMessageArrived = onMessageArrived;
-		
-		// // connect the client
-		// // client.connect({onSuccess:onConnect,
-		// // 				useSSL: true});
 
-		// client.connect({
+		// // connect the client
+		// // client.connect({onSuccess:onConnect});
+
+		// 	client.connect({
 		// 	onSuccess: onConnect, 
 		// 	userName : "mulemq",
 		// 	password : "!Y2df@35836"
 		// });
 
-		// console.log("attempting to connect...")
-		
-		
+
 		// // called when the client connects
 		// function onConnect() {
-		//   // Once a connection has been made, make a subscription and send a message.
-		//   console.log("onConnect");
-		//   client.subscribe("/World");
-		//   let message = new Paho.MQTT.Message("Hello");
-		//   message.destinationName = "/World";
-		//   //client.send(message);
-		// //console.log(client.getTraceLog());
-		
-		//   //client.getTraceLog().forEach(function(line){
-		//   //  console.log('Trace: ' + line)
-		//   //});
-		//   //newMessage = new Paho.MQTT.Message("Sent using synonyms!");
-		//   //newMessage.topic = "/World";
-		//   client.publish(message)
-		//   client.publish("/World", "Hello from a better publish call!", 1, false)
-		
-		//   topicMessage = new Paho.MQTT.Message("This is a message where the topic is set by setTopic");
-		//   topicMessage.topic = "/World";
-		//   client.publish(topicMessage)
-		
+		// // Once a connection has been made, make a subscription and send a message.
+		// 	console.log("onConnect");
+		// 	client.subscribe("soundalarm");
+
 		
 		// }
-		
+
+
+		// let triggerSound = function(){
+		// 	let data = {"channel": $scope.home.devices.selected.id };
+		// 	let dataJSON = JSON.stringify(data);
+
+
+		// 	let message = new Paho.MQTT.Message(dataJSON);
+		// 	message.destinationName = "soundalarm";
+		// 	client.send(message);
+		// }
+
+
 		// // called when the client loses its connection
 		// function onConnectionLost(responseObject) {
-		//   if (responseObject.errorCode !== 0) {
-		// 	console.log("onConnectionLost:"+responseObject.errorMessage);
-		//   }
+		// 	if (responseObject.errorCode !== 0) {
+		// 		console.log("onConnectionLost:"+responseObject.errorMessage);
+		// 	}
 		// }
-		
+
 		// // called when a message arrives
 		// function onMessageArrived(message) {
-		//   console.log("onMessageArrived:"+message.payloadString);
+		// console.log("onMessageArrived:"+message.payloadString);
 		// }
-
-		// set callback handlers
-		client.onConnectionLost = onConnectionLost;
-		client.onMessageArrived = onMessageArrived;
-
-		// connect the client
-		// client.connect({onSuccess:onConnect});
-
-			client.connect({
-			onSuccess: onConnect, 
-			userName : "mulemq",
-			password : "!Y2df@35836"
-		});
-
-
-		// called when the client connects
-		function onConnect() {
-		// Once a connection has been made, make a subscription and send a message.
-			console.log("onConnect");
-			client.subscribe("soundalarm");
-
-		
-		}
-
-
-		let triggerSound = function(){
-			let data = {"channel": $scope.home.devices.selected.id };
-			let dataJSON = JSON.stringify(data);
-
-
-			let message = new Paho.MQTT.Message(dataJSON);
-			message.destinationName = "soundalarm";
-			client.send(message);
-		}
-
-
-		// called when the client loses its connection
-		function onConnectionLost(responseObject) {
-			if (responseObject.errorCode !== 0) {
-				console.log("onConnectionLost:"+responseObject.errorMessage);
-			}
-		}
-
-		// called when a message arrives
-		function onMessageArrived(message) {
-		console.log("onMessageArrived:"+message.payloadString);
-		}
 
 	
 
