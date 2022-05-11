@@ -11,6 +11,7 @@ angular.module('Main')
 	'home_model',
 	function ($scope,$location,$timeout,$rootScope,$cookieStore,$filter,home_model) {
 
+
 		let currentUser = $rootScope.globals.currentUser;
 
 		$scope.user = {};
@@ -21,130 +22,174 @@ angular.module('Main')
 	    }	
 		
 	    $(".sidenav-place").css("width", "100px");	
+
+
+		$scope.home = {};
+		$scope.home.devices = {};
+
+		$scope.home.devices.selected = {};
+
+
+		
+		$scope.home.devices.cameras = {};
+
+		let idIndex = 0;
+
+		let devicesListTransformed = function( obj ){
+			$scope.home.devices.device = {};
+			$scope.home.devices.device.id = idIndex++;
+			$scope.home.devices.device.value = obj.name;
+			$scope.home.devices.devicesListTransformed.push($scope.home.devices.device);	
+		}
+
+		
    
-		
-		// SCRIPTING START
-		$scope.mgmt= {};
+		let devicesList = function( field, search, page, range ){
+			let idIndex = 0;
+            home_model.devicesRead(
+                currentUser.token,
+				field,
+				search,
+				page,
+				range,
+                function(response){
+                    if(response.status == 200){  
+						
+						$scope.home.devices.devicesListTransformed = [];
+						let dataList = response.data;
+						dataList.forEach(devicesListTransformed);
+						$scope.home.devices.cameras = $scope.home.devices.devicesListTransformed;
 
-		$scope.mgmt.regCamera = [
-			{ "id" : "1", "value" : "CAM 1" },
-			{ "id" : "2", "value" : "CAM 2" }
-		]
+						selectdefaultCam("default");
+					}
+                }
+            );
+        }
 
-		$scope.mgmt.regCamera.selected = $rootScope.globals.indexCamValue;
+		let findDeviceIndex = function(id) {
+			return $scope.home.devices.cameras.findIndex(object => {
+				return object.id === id;
+			});
+		}
 
-		console.log("CAMERA Selected");
-		console.log($scope.mgmt.regCamera.selected);
-		
-		$scope.mgmt.regCamera.selected_change = function(){		
-			streamSelectCookie();
+		$scope.home.devices.selectedChange = function(){
+			selectdefaultCam("onChange");
+		}
+
+		let selectdefaultCam = function( action ){
+
+
+			 console.log( action)
+			 console.log($rootScope.globals.indexCamValue);
+			
+
+			if( action === "default" && ($rootScope.globals.indexCamValue === undefined || $rootScope.globals.indexCamValue === -1)){
+			 	$scope.home.devices.selected = $scope.home.devices.cameras[0];
+			 	$rootScope.globals.indexCamValue = findDeviceIndex($scope.home.devices.selected.id);
+			 	$cookieStore.put('globals', $rootScope.globals);
+			}
+
+			if( action === "default" && ($rootScope.globals.indexCamValue !== undefined || $rootScope.globals.indexCamValue !== -1)){
+				$scope.home.devices.selected = $scope.home.devices.cameras[$rootScope.globals.indexCamValue];
+				$rootScope.globals.indexCamValue = findDeviceIndex($scope.home.devices.selected.id);
+				$cookieStore.put('globals', $rootScope.globals);
+		   }
+
+			if( action === "onChange" ){
+			 	console.log("ID ======================")
+			 	console.log($scope.home.devices.selected);
+				console.log($scope.home.devices.selected.value);
+				$rootScope.globals.indexCamValue = findDeviceIndex($scope.home.devices.selected.id);
+				$cookieStore.put('globals', $rootScope.globals);
+
+				location.reload();
+			}
+
+			getCodecInfo();
+
+
 		}
 
 
-			// SCRIPTING START
-			$scope.mgmt= {};
+		devicesList("name","",1,100);
 
-			$scope.mgmt.regCamera = [
-				{ "id" : "1", "value" : "CAM 1" },
-				{ "id" : "2", "value" : "CAM 2" }
-			]
-	
-			$scope.mgmt.regCamera.selected = $rootScope.globals.indexCamValue;
-	
-			console.log("CAMERA Selected");
-			console.log($scope.mgmt.regCamera.selected);
-			
-			$scope.mgmt.regCamera.selected_change = function(){		
-				streamSelectCookie();
-			}
-	
-			if($rootScope.globals.indexCamValue == null){
-				$rootScope.globals.indexCamValue = $scope.mgmt.regCamera[0];	
-				$cookieStore.put('globals', $rootScope.globals);
-			}
-	
-			getCodecInfo();
-	
-			let streamSelectCookie = function(){
-				
-				$rootScope.globals.indexCamValue = $scope.mgmt.regCamera.selected;	
-				$cookieStore.put('globals', $rootScope.globals)
-				
-				location.reload();
-			
-			}
-	
-			let config = {};
-	
-			   let stream = new MediaStream();
-	
-	
-			const pc = new RTCPeerConnection(config);
-			pc.onnegotiationneeded = handleNegotiationNeededEvent;
-	
-			let log = msg => {
-				document.getElementById('div').innerHTML += msg + '<br>'
-			}
-	
-			pc.ontrack = function(event) {
-				stream.addTrack(event.track);
-				videoElem.srcObject = stream;
-				log(event.streams.length + ' track is delivered')
-			}
-	
-			pc.oniceconnectionstatechange = e => log(pc.iceConnectionState)
-	
-			async function handleNegotiationNeededEvent() {
-				let offer = await pc.createOffer();
-				await pc.setLocalDescription(offer);
-				getRemoteSdp();
-			}
-	
-	
-			function getCodecInfo() {
-			$.get("../rstp/stream/codec/" + encodeURI($scope.mgmt.regCamera.selected.value), function(data) {
-				try {
-				data = JSON.parse(data);
-				} catch (e) {
-				console.log(e);
-				} finally {
-				$.each(data,function(index,value){
-					pc.addTransceiver(value.Type, {
-					'direction': 'sendrecv'
-					})
+
+
+
+
+
+
+		let config = {};
+
+		let stream = new MediaStream();
+
+
+		const pc = new RTCPeerConnection(config);
+		pc.onnegotiationneeded = handleNegotiationNeededEvent;
+
+		let log = msg => {
+			document.getElementById('div').innerHTML += msg + '<br>'
+		}
+
+		pc.ontrack = function(event) {
+			stream.addTrack(event.track);
+			videoElem.srcObject = stream;
+			log(event.streams.length + ' track is delivered')
+		}
+
+		pc.oniceconnectionstatechange = e => log(pc.iceConnectionState)
+
+		async function handleNegotiationNeededEvent() {
+			let offer = await pc.createOffer();
+			await pc.setLocalDescription(offer);
+			getRemoteSdp();
+		}
+
+
+		function getCodecInfo() {
+		$.get("../rstp/stream/codec/" + $scope.home.devices.selected.value, function(data) {
+			try {
+			data = JSON.parse(data);
+			} catch (e) {
+			console.log(e);
+			} finally {
+			$.each(data,function(index,value){
+				pc.addTransceiver(value.Type, {
+				'direction': 'sendrecv'
 				})
-				//send ping becouse PION not handle RTCSessionDescription.close()
-				sendChannel = pc.createDataChannel('foo');
-				sendChannel.onclose = () => console.log('sendChannel has closed');
-				sendChannel.onopen = () => {
-					console.log('sendChannel has opened');
-					sendChannel.send('ping');
-					setInterval(() => {
-					sendChannel.send('ping');
-					}, 1000)
-				}
-				sendChannel.onmessage = e => log(`Message from DataChannel '${sendChannel.label}' payload '${e.data}'`);
-				}
-			});
+			})
+			//send ping becouse PION not handle RTCSessionDescription.close()
+			sendChannel = pc.createDataChannel('foo');
+			sendChannel.onclose = () => console.log('sendChannel has closed');
+			sendChannel.onopen = () => {
+				console.log('sendChannel has opened');
+				sendChannel.send('ping');
+				setInterval(() => {
+				sendChannel.send('ping');
+				}, 1000)
 			}
-	
-			let sendChannel = null;
-	
-			function getRemoteSdp() {
-			$.post("../rstp/stream/receiver/"+  encodeURI($scope.mgmt.regCamera.selected.value), {
-				suuid: $scope.mgmt.regCamera.selected.value,
-				data: btoa(pc.localDescription.sdp)
-			}, function(data) {
-				try {
-				pc.setRemoteDescription(new RTCSessionDescription({
-					type: 'answer',
-					sdp: atob(data)
-				}))
-				} catch (e) {
-				console.warn(e);
-				}
-			});
+			sendChannel.onmessage = e => log(`Message from DataChannel '${sendChannel.label}' payload '${e.data}'`);
 			}
+		});
+		}
+
+		let sendChannel = null;
+
+		function getRemoteSdp() {
+		$.post("../rstp/stream/receiver/"+  $scope.home.devices.selected.value, {
+			suuid: $scope.home.devices.selected.value,
+			data: btoa(pc.localDescription.sdp)
+		}, function(data) {
+			try {
+			pc.setRemoteDescription(new RTCSessionDescription({
+				type: 'answer',
+				sdp: atob(data)
+			}))
+			} catch (e) {
+			console.warn(e);
+			}
+		});
+		}
 
 		// Experiment using TensorFlow & COCO-SSD
 		// const app = document.getElementById('app');
@@ -339,7 +384,7 @@ angular.module('Main')
 
 
 		let triggerSound = function(){
-			let data = {"channel": $scope.mgmt.regCamera.selected.id };
+			let data = {"channel": $scope.home.devices.selected.id };
 			let dataJSON = JSON.stringify(data);
 
 
@@ -360,6 +405,18 @@ angular.module('Main')
 		function onMessageArrived(message) {
 		console.log("onMessageArrived:"+message.payloadString);
 		}
+
+	
+
+
+
+
+
+
+
+
+
+
 
 	}
 
