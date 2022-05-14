@@ -8,10 +8,10 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 	<flow name="post:/features/read:Main_Router_SDCD_App_Config">
 		<flow-ref name="readFeaturesControllerFlow" doc:name="readFeaturesControllerFlow"/>
 	</flow>
-	<flow name="post:/features/update/create:Main_Router_SDCD_App_Config">
-		<flow-ref name="createUpdateFeaturesControllerFlow" doc:name="createUpdateFeaturesControllerFlow"/>
+	<flow name="post:/features/read/enabled:Main_Router_SDCD_App_Config">
+		<flow-ref name="readEnabledFeaturesControllerFlow" doc:name="readEnabledFeaturesControllerFlow"/>
 	</flow>
-	<flow name="post:/features/update/delete:Main_Router_SDCD_App_Config">
-		<flow-ref name="deleteUpdateFeaturesControllerFlow" doc:name="deleteUpdateFeaturesControllerFlow"/>
+	<flow name="post:/features/update:Main_Router_SDCD_App_Config">
+		<flow-ref name="updateFeaturesControllerFlow" doc:name="updateFeaturesControllerFlow"/>
 	</flow>
 </mule>

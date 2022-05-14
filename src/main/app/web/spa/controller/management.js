@@ -31,15 +31,105 @@ angular.module('Management')
 			$scope.management.devices.tableViewVisibility = (val == "devices" ? true : false);
 			$scope.management.users.tableViewVisibility = (val == "users" ? true : false);
 			$scope.management.features.tableViewVisibility = (val == "features" ? true : false);
+			$scope.management.features.entryListViewPanel = (val == "features" ? true : false);
 		}
 
 
 		$scope.management.features = {};
+		$scope.management.features.feature = {};
+		$scope.management.features.featuresListTransformed = [];
 
 		$scope.management.features.clickTab = function(){
 			managementTabs("features");
+			featuresList();
+			createModifyFeatureEntryPanel("back");
 		}
 
+		let featuresListTransformed = function(  obj ){
+
+			let valObject = {};
+
+			valObject.id = obj.id;
+			valObject.code = obj.code;
+			valObject.name = obj.name;
+			valObject.details = obj.details;
+			valObject.enabledCheck = obj.enabled == 1 ? true : false;
+			valObject.created_at = obj.created_at != undefined ? new Date(obj.created_at).toUTCString() : "";
+			valObject.updated_at = obj.updated_at != undefined ? new Date(obj.updated_at).toUTCString() : "";
+
+			$scope.management.features.featuresListTransformed.push(valObject);			
+		}
+
+		let createModifyFeatureEntryPanel = function( val ){
+			$scope.management.features.entryListViewPanel = val == "modify" || val == "create" ? false : true;
+			$scope.management.features.addModifyViewEntryPanel = val == "modify" || val == "create" ? true : false;
+		}
+
+		let featuresEntryFeilds = function( actionType, obj ){
+
+			$scope.management.features.feature.id = actionType == "modify" ? obj.id : "";
+			$scope.management.features.feature.code = actionType == "modify" ? obj.code : "";
+			$scope.management.features.feature.name = actionType == "modify" ? obj.name : "";
+			$scope.management.features.feature.details = actionType == "modify" ? obj.details : "";
+			$scope.management.features.feature.enabledCheck = actionType == "modify" ? (obj.enabledCheck == 1 ? true : false): "";
+			$scope.management.features.feature.createdAt = actionType == "modify" ? obj.created_at : "";
+			$scope.management.features.feature.updatedAt = actionType == "modify" ? obj.updated_at : "";
+
+			$scope.management.features.errorUpdateFeaturesValidationMessageVisibility = false;
+		}
+
+		let featuresList = function(){
+			$scope.management.features.loadingListEntryVisibility = true;
+            management_model.featuresRead(
+                currentUser.token,
+                function(response){
+                    $scope.management.users.list = [];
+                    if(response.status == 200){
+
+						$scope.management.features.featuresListTransformed = [];
+						let dataList = response.data; console.log(response.data);
+						dataList.forEach(featuresListTransformed);
+                        $scope.management.features.loadingListEntryVisibility = false;
+                    }
+                }
+            );
+        }
+
+		let featuresUpdate = function( name, enabled, details, code ){
+			$scope.management.features.loadingActionEntryVisibility = true;
+			management_model.featuresUpdate(
+                currentUser.token,
+				name,
+				enabled,
+				details,
+				code,
+				function(response){
+					if(response.status == 200){
+						$scope.management.features.loadingActionEntryVisibility = false;
+						$scope.management.features.clickTab();
+					}
+				}
+			);
+		}
+
+		$scope.management.features.modifyEntryClickButton = function(val) {
+			featuresEntryFeilds("modify", val);
+			createModifyFeatureEntryPanel("modify");
+		}
+
+
+		$scope.management.features.cancelUserEntryButton = function(){
+			$scope.management.features.clickTab();
+		}
+
+		$scope.management.features.updateUserEntryButton = function(){
+			featuresUpdate( 
+				$scope.management.features.feature.name,
+				$scope.management.features.feature.enabledCheck == true ? 1 : 0,
+				$scope.management.features.feature.details,
+				$scope.management.features.feature.code
+			);
+		}
 
 		/*** Users Panel TOP ***/
 

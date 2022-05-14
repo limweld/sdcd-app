@@ -294,7 +294,6 @@
                     </div>
 
                     <div class="w3-panel row" ng-show="management.users.addModifyViewEntryPanel">
-
                         <form>
                             <div class="form-group row">
                                 <div class="col-sm-9">
@@ -397,7 +396,123 @@
                 </div>
                 <!-- Users Form End -->
 
+                <!-- Features Form Start -->
+                <div id="Features" class="w3-container" ng-show="management.features.tableViewVisibility">
 
+                    <div class="form-group row w3-margin-top" ng-show="management.features.loadingListEntryVisibility">
+                        <div class="col-sm-12">
+                          <div class="progress">
+                            <div class="progress-bar progress-bar-striped active" style="width:100%"></div>
+                          </div>
+                        </div>
+                    </div>
+
+                    <table class="w3-table w3-bordered w3-hoverable w3-small w3-border w3-margin-top w3-margin-bottom" ng-show="management.features.entryListViewPanel">
+                        <thead>
+                            <tr class="w3-light-grey">
+                                <th>Feature</th>
+                                <th>Details</th>
+                                <th><i class="fa fa-info-circle"  ></i></th>
+                                <th style="text-align: center;"><i class="fa fa-edit"></i></th>
+                            </tr>
+                        </thead>
+                        <tr ng-repeat="x in management.features.featuresListTransformed">
+                            <td>{{x.name}}</td>
+                            <td>{{x.details}}</td>
+                            <td>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" disabled="disabled" ng-checked={{x.enabledCheck}}>
+                                </div>
+                            </td>
+                            <td style="text-align: center;">
+                                <div class="w3-button w3-tiny w3-blue" ng-click="management.features.modifyEntryClickButton(x)">
+                                    <i class="fa fa-edit"></i> Edit 
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="w3-panel row" ng-show="management.features.addModifyViewEntryPanel">
+                        <form>
+                            <div class="form-group row">
+                                <div class="col-sm-9">
+                                    <h3><b>Update Feature</b></h3>
+                                </div>
+                            </div>
+
+                            <div class="form-group row" ng-show="management.features.loadingActionEntryVisibility">
+                              <div class="col-sm-12">
+                                <div class="progress">
+                                  <div class="progress-bar progress-bar-striped active" style="width:100%"></div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label col-form-label-sm">Id</label>
+                                <div class="col-sm-9">
+                                  <input type="input" class="form-control form-control-sm" ng-model="management.features.feature.id" readonly>
+                                </div>
+                            </div>
+              
+                            <div class="form-group row">
+                              <label class="col-sm-3 col-form-label col-form-label-sm">Code</label>
+                              <div class="col-sm-9">
+                                <input type="input" class="form-control form-control-sm" ng-model="management.features.feature.code" readonly>
+                              </div>
+                            </div>
+              
+    
+                            <div class="form-group row">
+                              <label class="col-sm-3 col-form-label col-form-label-sm">Name</label>
+                              <div class="col-sm-9">
+                                <input type="input" class="form-control form-control-sm" ng-model="management.features.feature.name" >
+                              </div>
+                            </div>
+              
+                            <div class="form-group row">
+                              <label class="col-sm-3 col-form-label col-form-label-sm">Details</label>
+                              <div class="col-sm-9">
+                                <input type="input" class="form-control form-control-sm" ng-model="management.features.feature.details">
+                              </div>
+                            </div>
+              
+                            <div class="form-group row">
+                              <label class="col-sm-3 col-form-label col-form-label-sm">Enabled</label>
+                              <div class="col-sm-9">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" ng-model="management.features.feature.enabledCheck">
+                                </div>
+                              </div>
+                            </div>
+              
+                            <div class="form-group row">
+                              <label class="col-sm-3 col-form-label col-form-label-sm">Created At</label>
+                              <div class="col-sm-9">
+                                <input type="input" class="form-control form-control-sm" ng-model="management.features.feature.createdAt" readonly>
+                              </div>
+                            </div>
+              
+                            <div class="form-group row">
+                              <label class="col-sm-3 col-form-label col-form-label-sm">Updated At</label>
+                              <div class="col-sm-9">
+                                <input type="input" class="form-control form-control-sm" ng-model="management.features.feature.updatedAt" readonly>
+                              </div>
+                            </div>
+              
+                        </form>
+                    </div>
+
+                    <div class="w3-panel row" ng-show="management.features.addModifyViewEntryPanel">
+                        <form class="form-inline">
+                            <div  class="cst-cmpt-right">
+                                <div class="btn btn-sm btn-info" ng-click="management.features.cancelUserEntryButton()"><i class="fa fa-arrow-left"></i> Back</div>
+                                <div class="btn btn-sm btn-primary" ng-click="management.features.updateUserEntryButton()"><i class="fa fa-save"></i> Save</div>
+                            </div>
+                        </form>
+                    </div>         
+
+                </div>
             </div>
         </div>
 

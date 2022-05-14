@@ -23,15 +23,72 @@ angular.module('Main')
 		
 	    $(".sidenav-place").css("width", "100px");	
 
-
 		$scope.home = {};
 		$scope.home.devices = {};
-
 		$scope.home.devices.selected = {};
-
-
-		
 		$scope.home.devices.cameras = {};
+		$scope.home.clength = 600;
+		$scope.home.cwidth = 1000;
+
+		$scope.home.aiPanel = {};
+		$scope.home.aiPanel.videoModeTabVisibility = true;
+		$scope.home.aiPanel.videoModePanelVisibility = true;
+
+		$scope.home.aiPanel.videoAIModeONOFF = "OFF";
+
+		$scope.navigation = {};
+		$scope.navigation.featuresIcons = [];
+
+		let findFeature = function(code) {
+			return $scope.navigation.featuresIcons.findIndex(object => {
+				return object.code === code;
+			});
+		}
+
+		let featuresEnabledList = function(){
+			$scope.home.aiPanel.loadingListEntryVisibility = true;
+            home_model.featuresReadEnabled(
+                currentUser.token,
+                function(response){
+                    if(response.status == 200){  
+						$scope.home.aiPanel.loadingListEntryVisibility = false;
+						$scope.navigation.featuresIcons = response.data;
+					}
+                }
+            );
+        }
+
+		let defaultAIPanelSetting = function( val ){
+			$scope.home.aiPanel.videoAIModeONOFFColor = (val  == "ON" ? "w3-teal" : "w3-red");
+			$scope.home.aiPanel.socialDistancingModeTabVisibility = val == "ON" && findFeature("SD") != -1 ? true: false;
+			$scope.home.aiPanel.faceMaskDetectionModeTabVisibility = val == "ON" && findFeature("FM") != -1 ? true: false;
+			$scope.home.aiPanel.videoModePanelVisibility = val == "OFF" ? true: false;
+		}
+
+		let defaultAIPanelFunctionType = function( val ){
+			$scope.home.aiPanel.socialDistancingModeONSelected = val == "SD" ? "w3-gray" : "";
+			$scope.home.aiPanel.faceMaskDetectionModeONSelected = val == "FM" ? "w3-gray" : "" ;
+			$scope.home.aiPanel.socialDistancingModePanelVisibility = val == "SD" && $scope.home.aiPanel.videoAIModeONOFF == "ON" ? true : false; 
+			$scope.home.aiPanel.faceMaskDetectionModePanelVisibility = val == "FM" && $scope.home.aiPanel.videoAIModeONOFF == "ON" ? true : false;
+			
+		}
+
+		$scope.home.aiPanel.videoModeClickPanel = function(){
+			$scope.home.aiPanel.videoAIModeONOFF = $scope.home.aiPanel.videoAIModeONOFF == "OFF" ? "ON" : "OFF";
+			defaultAIPanelSetting( $scope.home.aiPanel.videoAIModeONOFF );
+			if($scope.navigation.featuresIcons.length != 0){
+				defaultAIPanelFunctionType($scope.navigation.featuresIcons[0].code);
+			//	videoElem.play();
+			}
+		}
+
+		$scope.home.aiPanel.socialDistancingModeClickPanel = function(){
+			defaultAIPanelFunctionType("SD");
+		}
+
+		$scope.home.aiPanel.faceMaskDetectionModeClickPanel  = function(){
+			defaultAIPanelFunctionType("FM");
+		}
 
 		let idIndex = 0;
 
@@ -42,10 +99,7 @@ angular.module('Main')
 			$scope.home.devices.devicesListTransformed.push($scope.home.devices.device);	
 		}
 
-		
-   
 		let devicesList = function( field, search, page, range ){
-			let idIndex = 0;
             home_model.devicesRead(
                 currentUser.token,
 				field,
@@ -61,6 +115,7 @@ angular.module('Main')
 						$scope.home.devices.cameras = $scope.home.devices.devicesListTransformed;
 
 						selectdefaultCam("default");
+						getCodecInfo();
 					}
                 }
             );
@@ -104,20 +159,16 @@ angular.module('Main')
 
 				location.reload();
 			}
-
-			getCodecInfo();
-
-
 		}
-
 
 		devicesList("name","",1,100);
 
+		defaultAIPanelSetting( $scope.home.aiPanel.videoAIModeONOFF );
+
+		featuresEnabledList();
 
 
-
-
-
+		/* CAMERA SCRIPT START */
 
 		let config = {};
 
@@ -162,7 +213,7 @@ angular.module('Main')
 			sendChannel = pc.createDataChannel('foo');
 			sendChannel.onclose = () => console.log('sendChannel has closed');
 			sendChannel.onopen = () => {
-				console.log('sendChannel has opened');
+				console.log('sendChannel has opened'); 
 				sendChannel.send('ping');
 				setInterval(() => {
 				sendChannel.send('ping');
@@ -191,232 +242,35 @@ angular.module('Main')
 		});
 		}
 
-		// Experiment using TensorFlow & COCO-SSD
-		// const app = document.getElementById('app');
-		// const loader = document.getElementById('loader');
-		const canvas = document.getElementById('canvas');
-		const video = document.getElementById('videoElem');
-		const ctx =  canvas.getContext('2d');
+		/* CAMERA SCRIPT END */
 
-		let modelPromise;
-		let model;
-		let predictions;
-		let maxDistance = 75;
+		var video = document.getElementById('videoElem');
 
+		var canvassd = document.getElementById('canvassd');
+		var canvasfm = document.getElementById('canvasfm');
+		var ctx1 = canvassd.getContext('2d');
+		var ctx2 = canvasfm.getContext('2d');
 
+		// set canvas size = video size when known
+		video.addEventListener('loadedmetadata', function() {
+			canvassd.width = $scope.home.cwidth;
+			canvassd.height = $scope.home.clength;
+			canvasfm.width = $scope.home.cwidth;
+			canvasfm.height = $scope.home.clength;
+		});
 
-		window.onload = async () => {
-			modelPromise = cocoSsd.load({ base: 'mobilenet_v2' });
-			model = await modelPromise;
-
-			video.addEventListener('play', () => requestAnimationFrame(updateCanvas), false);
-
-
-			ctx.font = '14px Arial';
-			ctx.fillStyle = 'lightgrey';
-			const title = 'Real-time social distancing detection';
-			const textSize = ctx.measureText(title).width;
-			ctx.fillText(
-				title,
-				canvas.width / 2 - textSize / 2,
-				canvas.height / 2
-			);
-			
-			//loader.style.display = 'none';
-			//app.style.display = 'block';
-		};
-
-		const drawBbox = () => {
-			predictions.map(prediction => {
-				if (prediction.class === 'person') {
-					setDistance(prediction);
-					const { distanceBreach, bbox: [x, y, width, height] } = prediction;
-
-					if (distanceBreach) {
-						const { distanceBreachLinks } = prediction;
-						for (let i = 0; i < distanceBreachLinks.length; i++) {
-							const [x, y, x2, y2] = distanceBreachLinks[i];
-							ctx.strokeStyle = 'rgb(250, 0, 0)';
-							ctx.fillStyle = 'rgb(250, 0, 0)';
-							ctx.lineWidth = 1;
-							ctx.fillRect(x - 2, y - 2, 4, 4);
-							ctx.fillRect(x2 - 2, y2 - 2, 4, 4);
-							ctx.beginPath();
-							ctx.moveTo(x, y);
-							ctx.lineTo(x2, y2);
-							ctx.stroke();
-						}
-
-						console.log("Distance Breach");
-						triggerSound();
-					}else{
-						console.log("Distance NOT Breach");
-					}
-					ctx.lineWidth = 1;
-					ctx.strokeStyle = 'rgb(0, 250, 0)';
-					ctx.fillStyle = 'rgb(0, 250, 0)';
-					ctx.strokeRect(x, y, width, height);
-					ctx.font = '9px Arial';
-					ctx.fillText('Person', x, y - 2);
-				}
-			});
-		};
-
-		const setDistance = person => {
-			const [x, y, w, h] = person.bbox;
-			let tmpBreachDistances = [];
-
-			for (let i = 0; i < predictions.length - 1; i++) {
-				const { bbox } = predictions[i];
-				const [x2, y2, w2, h2] = bbox;
-				const a = x + w / 2 - (x2 + w2 / 2);
-				const b = y + h / 2 - (y2 + h2 / 2);
-				const distance = Math.sqrt(a * a + b * b);
-
-				if (distance !== 0 && distance < maxDistance) {
-				person.distanceBreach = true;
-				tmpBreachDistances.push([
-				x + w / 2,
-				y + h / 2,
-				x2 + w2 / 2,
-				y2 + h2 / 2]);
-
+		video.addEventListener('play', function() {
+		var $this = this; //cache
+		(
+			function loop() {
+				if (!$this.paused && !$this.ended) {
+					ctx1.drawImage($this, 0, 0, $scope.home.cwidth, $scope.home.clength);
+					ctx2.drawImage($this, 0, 0, $scope.home.cwidth, $scope.home.clength);
+					setTimeout(loop, 1000 / 30); // drawing at 30fps
 				}
 			}
-
-			person.distanceBreachLinks = tmpBreachDistances;
-		};
-
-		const updateCanvas = async () => {
-			const { ended, paused, width, height } = video;
-			//if (ended || paused) return;
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			ctx.drawImage(video, 0, 0, width, height);
-			const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-			predictions = await model.detect(imageData);
-			drawBbox();
-
-			requestAnimationFrame(updateCanvas);
-		};
-
-
-		// 		// Create a client instance
-		// let client = new Paho.MQTT.Client("192.168.1.150", 9001, "clientId");
-
-		// // client.startTrace();
-
-		// // // set callback handlers
-		// // client.onConnectionLost = onConnectionLost;
-		// // client.onMessageArrived = onMessageArrived;
-		
-		// // // connect the client
-		// // // client.connect({onSuccess:onConnect,
-		// // // 				useSSL: true});
-
-		// // client.connect({
-		// // 	onSuccess: onConnect, 
-		// // 	userName : "mulemq",
-		// // 	password : "!Y2df@35836"
-		// // });
-
-		// // console.log("attempting to connect...")
-		
-		
-		// // // called when the client connects
-		// // function onConnect() {
-		// //   // Once a connection has been made, make a subscription and send a message.
-		// //   console.log("onConnect");
-		// //   client.subscribe("/World");
-		// //   let message = new Paho.MQTT.Message("Hello");
-		// //   message.destinationName = "/World";
-		// //   //client.send(message);
-		// // //console.log(client.getTraceLog());
-		
-		// //   //client.getTraceLog().forEach(function(line){
-		// //   //  console.log('Trace: ' + line)
-		// //   //});
-		// //   //newMessage = new Paho.MQTT.Message("Sent using synonyms!");
-		// //   //newMessage.topic = "/World";
-		// //   client.publish(message)
-		// //   client.publish("/World", "Hello from a better publish call!", 1, false)
-		
-		// //   topicMessage = new Paho.MQTT.Message("This is a message where the topic is set by setTopic");
-		// //   topicMessage.topic = "/World";
-		// //   client.publish(topicMessage)
-		
-		
-		// // }
-		
-		// // // called when the client loses its connection
-		// // function onConnectionLost(responseObject) {
-		// //   if (responseObject.errorCode !== 0) {
-		// // 	console.log("onConnectionLost:"+responseObject.errorMessage);
-		// //   }
-		// // }
-		
-		// // // called when a message arrives
-		// // function onMessageArrived(message) {
-		// //   console.log("onMessageArrived:"+message.payloadString);
-		// // }
-
-		// // set callback handlers
-		// client.onConnectionLost = onConnectionLost;
-		// client.onMessageArrived = onMessageArrived;
-
-		// // connect the client
-		// // client.connect({onSuccess:onConnect});
-
-		// 	client.connect({
-		// 	onSuccess: onConnect, 
-		// 	userName : "mulemq",
-		// 	password : "!Y2df@35836"
-		// });
-
-
-		// // called when the client connects
-		// function onConnect() {
-		// // Once a connection has been made, make a subscription and send a message.
-		// 	console.log("onConnect");
-		// 	client.subscribe("soundalarm");
-
-		
-		// }
-
-
-		// let triggerSound = function(){
-		// 	let data = {"channel": $scope.home.devices.selected.id };
-		// 	let dataJSON = JSON.stringify(data);
-
-
-		// 	let message = new Paho.MQTT.Message(dataJSON);
-		// 	message.destinationName = "soundalarm";
-		// 	client.send(message);
-		// }
-
-
-		// // called when the client loses its connection
-		// function onConnectionLost(responseObject) {
-		// 	if (responseObject.errorCode !== 0) {
-		// 		console.log("onConnectionLost:"+responseObject.errorMessage);
-		// 	}
-		// }
-
-		// // called when a message arrives
-		// function onMessageArrived(message) {
-		// console.log("onMessageArrived:"+message.payloadString);
-		// }
-
-	
-
-
-
-
-
-
-
-
-
-
+		)();
+		}, 0);
 
 	}
 

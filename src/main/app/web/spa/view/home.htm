@@ -13,23 +13,56 @@
             </div> 
         </div> 
 
-        <div class="w3-container">
 
-            <div class="w3-margin-left w3-margin-right">
+        <div class="w3-container">
                 <select ng-options="item.value for item in home.devices.cameras track by item.id"  ng-model="home.devices.selected" ng-change="home.devices.selectedChange()">
                 </select>
-            </div>
+        </div>
 
+        <div class="w3-margin">
+            <div class="w3-card-4">
+                <div class="w3-bar w3-black">
+                    <button class="w3-bar-item w3-button {{ home.aiPanel.videoAIModeONOFFColor }}" ng-click="home.aiPanel.videoModeClickPanel()" ng-show="home.aiPanel.videoModeTabVisibility">AI {{ home.aiPanel.videoAIModeONOFF }}</button>
+                    <button class="w3-bar-item w3-button {{ home.aiPanel.socialDistancingModeONSelected }}" ng-click="home.aiPanel.socialDistancingModeClickPanel()" ng-show="home.aiPanel.socialDistancingModeTabVisibility">Social Distancing</button>
+                    <button class="w3-bar-item w3-button {{ home.aiPanel.faceMaskDetectionModeONSelected }}" ng-click="home.aiPanel.faceMaskDetectionModeClickPanel()" ng-show="home.aiPanel.faceMaskDetectionModeTabVisibility">Face Mask Detection</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="w3-container" ng-show="home.aiPanel.loadingListEntryVisibility">
+            <div class="form-group row">
+                <div class="col-sm-12">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped active" style="width:100%"></div>
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w3-container" ng-show="home.aiPanel.videoModePanelVisibility">
             <div id="app" class="w3-margin-left w3-margin-right">
                 <input type="hidden" name="suuid" id="suuid" value="CAM 1">
                 <input type="hidden" name="port" id="port" value="80">
                 <input type="hidden" id="localSessionDescription" readonly="true">
                 <input type="hidden" id="remoteSessionDescription">
                 <div id="remoteVideos">
-                    <video id="videoElem" width="700" height="500" controls="true" autoplay></video>
+                    <video id="videoElem" width="1000" height="600" controls="true" autoplay></video>
                 </div>
                 <div id="div" hidden></div>
-                <canvas id="canvas" width="700" height="500"></canvas>
+                
+            </div>
+        </div>
+
+        <!-- Devices Form Start -->
+        <div id="VideoScope" class="w3-container" ng-show="home.aiPanel.socialDistancingModePanelVisibility">
+            <div class="w3-margin-left w3-margin-right">
+                <canvas id="canvassd" width="1000" height="600"  style="background-color: green;"></canvas>
+            </div>
+        </div>
+
+        <div id="AISDFDM" class="w3-container" ng-show="home.aiPanel.faceMaskDetectionModePanelVisibility">
+            <div class="w3-margin-left w3-margin-right">
+                <canvas id="canvasfm" width="1000" height="600" style="background-color: red;"></canvas>
             </div>
         </div>
 
@@ -42,6 +75,3 @@
         </div>
     </div> 
 </div>
-
-<script src="js/tfjs"></script>
-    <script src="js/coco-ssd"></script>

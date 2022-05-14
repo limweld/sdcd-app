@@ -20,8 +20,7 @@
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script src="js/adapter-latest.js"></script>
     <script src="js/mqttws31.min.js"></script>
-
-    
+    <!-- <script src="js/cloud-annotations/models" type="application/json"></script> -->
 
       
     <body class="w3-white w3-content" style="max-width:1600px" >
@@ -29,7 +28,7 @@
 
     <!-- Sidebar/menu -->
     <nav class="w3-sidebar w3-collapse w3-dark-gray w3-animate-left sidenav-place" id="mySidebar" ><br>
-        <div class="w3-bar-block w3-text-white" ng-controller="navigation_controller">
+        <div class="w3-bar-block w3-text-white">
             <a class="main">
                 <img class="w3-padding w3-round-xxlarge" src="img/MuleSoft.png" style="width:100%">
             </a>
@@ -37,8 +36,8 @@
         </div>  
         <div class="w3-bar-block w3-text-white sidenav" ng-controller="navigation_controller">
             <a ng-click="home_click()" href="#!home" class="w3-xxxlarge w3-padding {{home_nav}}"><i class="fa fa-tasks" ></i></a> 
-            <!-- <a ng-click="archiver_click()" href="#!archiver" class="w3-xxxlarge w3-padding {{archiver_nav}}"><i class="fa fa-folder"></i></a> -->
             <a ng-click="management_click()" href="#!management" class="w3-xxxlarge w3-padding {{management_nav}}"><i class="fa fa-cogs"></i></a>
+            <a ng-click="archiver_click()" href="#!archiver" class="w3-xxxlarge w3-padding {{archiver_nav}}" ng-show="archiver_nav_panel"><i class="fa fa-folder"></i></a>
         </div>  
     </nav>
 
@@ -66,10 +65,11 @@
     <script src="spa/model/home.js"></script>
     <script src="spa/model/archiver.js"></script>
     <script src="spa/model/management.js"></script>
+    <script src="spa/model/navigation.js"></script>
 
     <script src="js/custom.js"></script>
     
-    
-        
+    <script src='https://cdn.jsdelivr.net/npm/@tensorflow/tfjs'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd'></script>
     </body>
 </html>

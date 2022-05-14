@@ -327,6 +327,44 @@ angular.module('Management')
 			);		
         }
 
+        service.featuresRead = function(
+            token,
+			callback		
+		){
+			$http.post(
+                'api/features/read',
+                { 
+					api_token : token
+                }
+			).then(
+			   function(response){ callback(response); }, 
+			   function(response){ callback(response); }
+			);			
+        }
+
+        service.featuresUpdate = function(
+            token,
+            name,
+            enabled,
+            details,
+            code,
+            callback
+        ){
+            $http.post(
+                'api/features/update',
+                { 
+                    api_token: token,
+                    name: name,
+                    enabled: enabled,
+                    details: details,
+                    code: code
+                }
+			).then(
+			   function(response){ callback(response); }, 
+			   function(response){ callback(response); }
+			);			
+        }
+
 		return service;
 	}
 ]);	
