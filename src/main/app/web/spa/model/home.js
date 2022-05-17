@@ -46,6 +46,25 @@ angular.module('Main')
 			);			
         }
 
+		service.archivesCreate = function(
+            token,
+			sourceFrom,
+			image,
+            callback
+        ){
+            $http.post(
+                'api/archives/create',
+                { 
+                    api_token: token,
+					source_from: sourceFrom,
+					image: image
+                }
+			).then(
+			   function(response){ callback(response); }, 
+			   function(response){ callback(response); }
+			);		
+        }
+
 		return service;
 	}
 ]);	

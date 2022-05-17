@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+<flow name="post:/archives/create:Main_Router_SDCD_App_Config">
+		<flow-ref name="createArchivesControllerFlow" doc:name="createArchivesControllerFlow"/>
+	</flow>
+	<flow name="post:/archives/read:Main_Router_SDCD_App_Config">
+		<flow-ref name="readArchivesControllerFlow" doc:name="readArchivesControllerFlow"/>
+	</flow>
+	<flow name="post:/archives/read/single:Main_Router_SDCD_App_Config">
+		<flow-ref name="readSingleArchivesControllerFlow" doc:name="readSingleArchivesControllerFlow"/>
+	</flow>
+	<flow name="post:/archives/read/count:Main_Router_SDCD_App_Config">
+		<flow-ref name="readArchivesCountControllerFlow" doc:name="readArchivesCountControllerFlow"/>
+	</flow>
+	<flow name="post:/archives/delete:Main_Router_SDCD_App_Config">
+		<flow-ref name="deleteArchivesControllerFlow" doc:name="deleteArchivesControllerFlow"/>
+	</flow>
+</mule>

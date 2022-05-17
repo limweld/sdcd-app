@@ -58,6 +58,19 @@ angular.module('Main')
             );
         }
 
+		let archivesCreate = function(sourceFrom, image){
+			home_model.archivesCreate(
+				currentUser.token,
+				sourceFrom, 
+				image,
+				function(response){
+					if(response.status == 200){
+						console.log("Image Inserted!")
+					}
+				}
+			);
+		}
+
 		let defaultAIPanelSetting = function( val ){
 			$scope.home.aiPanel.videoAIModeONOFFColor = (val  == "ON" ? "w3-teal" : "w3-red");
 			$scope.home.aiPanel.socialDistancingModeTabVisibility = val == "ON" && findFeature("SD") != -1 ? true: false;
@@ -88,6 +101,7 @@ angular.module('Main')
 
 		$scope.home.aiPanel.faceMaskDetectionModeClickPanel  = function(){
 			defaultAIPanelFunctionType("FM");
+			insertSnapshot();
 		}
 
 		let idIndex = 0;
@@ -116,6 +130,7 @@ angular.module('Main')
 
 						selectdefaultCam("default");
 						getCodecInfo();
+						insertSnapshot();
 					}
                 }
             );
@@ -272,6 +287,73 @@ angular.module('Main')
 		)();
 		}, 0);
 
+		let clientId = "clinetId";
+
+		// Create a client instance
+		let client = new Paho.MQTT.Client("192.168.1.150", 9001, clientId);
+
+		// set callback handlers
+		client.onConnectionLost = onConnectionLost;
+		client.onMessageArrived = onMessageArrived;
+
+		// connect the client
+		client.connect({
+			timeout: 10,
+			keepAliveInterval: 20,
+			cleanSession: true,
+			invocationContext: {'clientId': clientId},
+			userName : "mulemq",
+			password : "!Y2df@35836",
+			onSuccess: onConnect,
+			onFailure: function(err) {
+				console.log(err);
+			}
+		});
+
+
+		// called when the client connects
+		function onConnect() {
+		// Once a connection has been made, make a subscription and send a message.
+			console.log("onConnect");
+			client.subscribe("soundalarm");
+
+		
+		}
+
+
+		// let triggerSound = function(){
+		// 	let data = {"channel": $scope.home.devices.selected.id };
+		// 	let dataJSON = JSON.stringify(data);
+
+
+		// 	let message = new Paho.MQTT.Message(dataJSON);
+		// 	message.destinationName = "soundalarm";
+		// 	client.send(message);
+		// }
+
+
+		// // called when the client loses its connection
+		function onConnectionLost(responseObject) {
+			if (responseObject.errorCode !== 0) {
+				console.log("onConnectionLost:"+responseObject.errorMessage);
+			}
+		}
+
+		// called when a message arrives
+		function onMessageArrived(message) {
+			console.log("onMessageArrived:"+message.payloadString);
+		}
+
+
+		let insertSnapshot = function(){
+			let canvas1 = document.getElementById('canvassd');
+			let dataURL = canvas1.toDataURL();
+			// console.log(dataURL);
+	
+			archivesCreate($scope.home.devices.selected.value,dataURL);
+		}
+
+	
 	}
 
 ]);

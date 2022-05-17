@@ -87,7 +87,7 @@ angular.module('Management')
                     if(response.status == 200){
 
 						$scope.management.features.featuresListTransformed = [];
-						let dataList = response.data; console.log(response.data);
+						let dataList = response.data;
 						dataList.forEach(featuresListTransformed);
                         $scope.management.features.loadingListEntryVisibility = false;
                     }
