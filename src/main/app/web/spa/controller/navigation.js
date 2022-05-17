@@ -33,7 +33,6 @@ angular.module('Navigation')
                 function(response){
                     if(response.status == 200){  
 						$scope.navigation.featuresIcons = response.data;
-						console.log("FM");
 						$scope.archiver_nav_panel = findFeature("FM") != -1 ? true : false;
 					}
                 }
