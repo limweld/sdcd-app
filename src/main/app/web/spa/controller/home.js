@@ -535,7 +535,7 @@ angular.module('Main')
 
 		async function loadModel() {
 			 //model = await tf.loadLayersModel('https://raw.githubusercontent.com/alifwahyd/FaceMaskDetection-Webapp/master/tfjs-models/model.json');
-			model = await tf.loadLayersModel('ai/models/mask_models/model.json');
+			model = await tf.loadLayersModel('ai/models/mask_model/model.json');
 			return model;
 		}
 
