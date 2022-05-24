@@ -285,10 +285,10 @@ angular.module('Main')
 		// )();
 		// }, 0);
 
-		let clientId = "clinetId";
+		let clientId = (Math.random() + 1).toString(36).substring(7);
 
 		// Create a client instance
-		let client = new Paho.MQTT.Client("192.168.2.150", 9001, clientId);
+		let client = new Paho.MQTT.Client("192.168.4.150", 9001, clientId);
 
 		// set callback handlers
 		client.onConnectionLost = onConnectionLost;
